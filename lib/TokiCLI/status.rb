@@ -5,6 +5,9 @@ module TokiCLI
       def version(version)
         "\n-- TokiCLI --\n\nVersion:\t#{version}\nUrl:\t\thttp://github.com/ericdke/TokiCLI\n\n"
       end
+      def wtf
+        "\nAn error occurred! Goodbye, and thanks for all the fish.\n\n"
+      end
     end
     extend ClassMethods # This is a way to avoid having to declare self.xxx for each def
   end

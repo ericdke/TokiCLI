@@ -17,15 +17,17 @@ module TokiCLI
 
     desc "total", "Total usage of all apps"
     def total
-      init()
-      @view.apps_total(@toki.apps_total)
+      init() #option: true/false for db backup/no db backup, false by default
+      apps = @toki.apps_total
+      title = "Toki: Total usage of all apps" #optional
+      @view.apps_total(apps, title)
     end
 
     private
 
-    def init
+    def init(backup = false)
       fileops = FileOps.new
-      fileops.backup_db()
+      fileops.backup_db() if backup == true
       @toki = TokiAPI.new(fileops.db_path)
       @view = View.new
     end

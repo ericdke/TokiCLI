@@ -17,7 +17,7 @@ module TokiCLI
       if File.exist?(@db_path)
         FileUtils.copy(@db_path, "#{@toki_path}/backup/toki_data.sqlite3.bak")
       else
-        raise "Couldn't find file: #{@db_path}"
+        raise "File does not exist: #{@db_path}"
       end
     end
 

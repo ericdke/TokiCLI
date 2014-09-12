@@ -7,42 +7,53 @@ module TokiCLI
     require 'terminal-table'
 
     def version
-      table = init_table()
-      table.title = "TokiCLI for Toki.app"
+      table = init_table("TokiCLI for Toki.app")
       table << ['Version', VERSION]
       table << :separator
       table << ['Infos', 'http://github.com/ericdke/TokiCLI']
       puts "\n#{table}\n"
     end
 
-    def apps_total(data) # accepts json
-      # table = init_table()
-      # if data['data']['apps']
-      #   if data['data']['date']
-      #     table.title = "Your apps monitored by Toki: #{data['data']['date']}"
-      #   else
-      #     table.title = "Your apps monitored by Toki"
-      #   end
-      #   puts apps_3(data, table)
-      # else
-      #   table.title = "Your app monitored by Toki"
-      #   puts total_3(data, table)
-      # end
-      # puts "\n"
-      puts data
+    def apps_total(api_response, title = "Your apps monitored by Toki")
+      apps = JSON.parse(api_response)['data']
+      table = init_table(title)
+      puts populate_table(apps, table)
     end
 
     private
 
-    def init_table
+    def init_table(title = 'TokiCLI')
       Terminal::Table.new do |t|
         t.style = { :width => 80 }
+        t.title = title
       end
     end
 
-    def max_width(width, txt)
+    def populate_table(apps, table)
+      if apps[0]['name']
+        apps.each { |app| table << app_row_with_name(app) }
+      else
+        apps.each { |app| table << app_row(app) }
+      end
+      return table
+    end
+
+    def app_row_with_name(obj)
+      [width(30, obj['bundle']), width(30, obj['name']), readable_time(obj)]
+    end
+
+    def app_row(obj)
+      [width(30, obj['bundle']), readable_time(obj)]
+    end
+
+    def width(width, text)
       boundary = width - 3
       text.length >= width ? "#{text[0..boundary]}..." : text
+    end
+
+    def readable_time(obj)
+      data = obj['total']['time']
+      "#{'%.2d' % data['hours']}h #{'%.2d' % data['minutes']}m #{'%.2d' % data['seconds']}s"
     end
 
   end

@@ -13,7 +13,7 @@ module TokiCLI
         seconds = (secs - (minutes * 60 + hours * 3600))
         {hours: hours, minutes: minutes, seconds: seconds}
       rescue Exception => e
-        oops e
+        raise e, Status.wtf
       end
     end
 
