@@ -9,12 +9,13 @@ module TokiCLI
 
     require_relative 'helpers'
 
-    attr_accessor :db
+    attr_accessor :db, :bundles
 
-    def initialize(db_path)
+    def initialize(db_path, bundles = nil)
       @table = 'KKAppActivity'
       @db = Amalgalite::Database.new(db_path)
       @helpers = Helpers.new
+      @bundles = bundles
     end
 
     def apps_total
@@ -35,15 +36,27 @@ module TokiCLI
     private
 
     def make_apps_objects(db_resp)
-      db_resp.map do |id, sec|
-        {
-          bundle: id,
-          # name: @helpers.find_app_name(id),
-          total: {
-            seconds: sec,
-            time: @helpers.sec_to_time(sec)
+      if @bundles.nil?
+        db_resp.map do |id, sec|
+          {
+            bundle: id,
+            total: {
+              seconds: sec,
+              time: @helpers.sec_to_time(sec)
+            }
           }
-        }
+        end
+      else
+        db_resp.map do |id, sec|
+          {
+            bundle: id,
+            name: @bundles[id],
+            total: {
+              seconds: sec,
+              time: @helpers.sec_to_time(sec)
+            }
+          }
+        end
       end
     end
 

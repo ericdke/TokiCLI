@@ -15,20 +15,26 @@ module TokiCLI
       View.new.version
     end
 
+    desc "scan", "Scan the computer for applications names"
+    def scan
+      FileOps.new.scan_bundles
+    end
+
     desc "total", "Total usage of all apps"
     def total
-      init() #option: true/false for db backup/no db backup, false by default
-      apps = @toki.apps_total
-      title = "Toki: Total usage of all apps" #optional
-      @view.apps_total(apps, title)
+      init() # Alternative: init(true). Backups the db before using it.
+      apps = @toki.apps_total # gets the JSON response from TokiAPI
+      title = "Toki - Total usage of all apps"
+      @view.apps_total(apps, title) # Title is optional: @view.apps_total(apps)
     end
 
     private
 
+    # Replaces usual initialize method
     def init(backup = false)
       fileops = FileOps.new
-      fileops.backup_db() if backup == true
-      @toki = TokiAPI.new(fileops.db_path)
+      fileops.backup_db if backup == true
+      @toki = TokiAPI.new(fileops.db_path, fileops.bundles) # fileops.bundles is optional
       @view = View.new
     end
 

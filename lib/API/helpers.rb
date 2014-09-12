@@ -4,8 +4,6 @@ module TokiCLI
 
   class Helpers
 
-    require 'CFPropertyList'
-
     def sec_to_time(secs)
       begin
         hours = secs / 3600

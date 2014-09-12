@@ -8,6 +8,13 @@ module TokiCLI
       def wtf
         "\nAn error occurred! Goodbye, and thanks for all the fish.\n\n"
       end
+      def no_plist
+        "Unable to read the file, skipping...\n"
+      end
+
+      def analysing(obj)
+        "Analyzing #{obj} ...\n"
+      end
     end
     extend ClassMethods # This is a way to avoid having to declare self.xxx for each def
   end
