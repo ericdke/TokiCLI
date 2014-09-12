@@ -21,13 +21,25 @@ module TokiCLI
     def apps_total
       request = {command: 'apps_total', type: 'apps', args: [], processed_at: Time.now}
       resp = @db.apps_total
-      return no_resp(request) if resp.empty?
-      result = make_apps_objects(resp)
-      list = result.sort_by {|obj| obj[:total][:seconds]}
+      list = make_apps_list(request, resp)
+      @response = make_basic_response(request, list)
+    end
+
+    def apps_top(number = 5)
+      request = {command: 'apps_top', type: 'apps', args: [number], processed_at: Time.now}
+      resp = @db.apps_total
+      index = -number
+      list = make_apps_list(request, resp)[index..-1]
       @response = make_basic_response(request, list)
     end
 
     private
+
+    def make_apps_list(request, resp)
+      return no_resp(request) if resp.empty?
+      result = make_apps_objects(resp)
+      result.sort_by {|obj| obj[:total][:seconds]}
+    end
 
     def make_basic_response(request, list)
       {

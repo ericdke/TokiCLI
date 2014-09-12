@@ -17,6 +17,7 @@ module TokiCLI
     def apps_total(api_response, title = "Your apps monitored by Toki")
       apps = JSON.parse(api_response)['data']
       table = init_table(title)
+      puts "\n"
       puts populate_table(apps, table)
     end
 
