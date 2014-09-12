@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+# encoding: utf-8
+# Toki command-line client
+# TokiCLI by: Eric Dejonckheere (http://app.net/ericd)
+# Toki.app by: Keitaroh Kobayashi (http://app.net/keita)
+
+$PROGRAM_NAME = 'toki'
+require_relative '../lib/TokiCLI'
+
+TokiCLI::App.start ARGV
