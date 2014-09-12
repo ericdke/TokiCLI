@@ -5,12 +5,13 @@ module TokiCLI
     require 'fileutils'
     require 'CFPropertyList'
 
-    attr_accessor :toki_path, :db_path, :bundles
+    attr_accessor :home_path, :toki_path, :db_path, :bundles_path, :bundles
 
     def initialize
       @home_path = Dir.home
       @toki_path = "#{@home_path}/.TokiCLI"
       @db_path = "#{@home_path}/Library/Containers/us.kkob.Toki/Data/Documents/toki_data.sqlite3"
+      @bundles_path = "#{@toki_path}/data/bundles.json"
       @bundles = load_bundles()
     end
 
@@ -31,18 +32,20 @@ module TokiCLI
     end
 
     def load_bundles
-      bundles_file = "#{@toki_path}/data/bundles.json"
-      if File.exist?(bundles_file)
-        JSON.parse(File.read(bundles_file))
+      if File.exist?(@bundles_path)
+        JSON.parse(File.read(@bundles_path))
       else
         nil
       end
     end
 
-    def scan_bundles
-      bundle_ids = get_bundle_ids()
+    def get_bundles
+      get_bundle_ids()
+    end
 
-      puts bundle_ids.inspect
+    def save_bundles
+      @bundles = get_bundle_ids()
+      File.write(@bundles_path, @bundles.to_json)
     end
 
     private

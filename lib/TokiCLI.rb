@@ -17,7 +17,11 @@ module TokiCLI
 
     desc "scan", "Scan the computer for applications names"
     def scan
-      FileOps.new.scan_bundles
+      puts Status.scanning
+      fileops = FileOps.new
+      fileops.save_bundles
+      puts Status.file_saved(fileops.bundles_path)
+      puts Status.next_launch_with_names
     end
 
     desc "total", "Total usage of all apps"

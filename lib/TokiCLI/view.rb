@@ -24,16 +24,18 @@ module TokiCLI
 
     def init_table(title = 'TokiCLI')
       Terminal::Table.new do |t|
-        t.style = { :width => 80 }
+        t.style = { :width => 90 }
         t.title = title
       end
     end
 
     def populate_table(apps, table)
-      if apps[0]['name']
-        apps.each { |app| table << app_row_with_name(app) }
-      else
-        apps.each { |app| table << app_row(app) }
+      apps.each do |app|
+        if app['name']
+          table << app_row_with_name(app)
+        else
+          table << app_row(app)
+        end
       end
       return table
     end
@@ -43,7 +45,7 @@ module TokiCLI
     end
 
     def app_row(obj)
-      [width(30, obj['bundle']), readable_time(obj)]
+      [width(30, obj['bundle']), '(unknown)', readable_time(obj)]
     end
 
     def width(width, text)
