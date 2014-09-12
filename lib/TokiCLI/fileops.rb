@@ -80,7 +80,17 @@ module TokiCLI
         'com.apple.WebKit.PluginProcess' => 'Safari Plugin',
         'com.apple.ScreenSharing' => 'Apple Screen Sharing',
         'org.virtualbox.app.VirtualBoxVM' => 'VirtualBox',
-        '2BUA8C4S2C.com.agilebits.onepassword-osx-helper' => '1Password Helper'
+        '2BUA8C4S2C.com.agilebits.onepassword-osx-helper' => '1Password Helper',
+        'com.apple.AirPlayUIAgent' => 'AirPlayUIAgent',
+        'com.apple.ScreenSaver.Engine' => 'ScreenSaver',
+        'com.adobe.PDApp' => 'Adobe Application Manager',
+        'com.screentime.flash.builder' => 'Screentime for Flash',
+        'com.apple.systemuiserver' => 'SystemUIServer',
+        'org.mozilla.plugincontainer' => 'Mozilla Plugin-container',
+        'com.adobe.ACCC.Uninstaller' => 'Adobe Creative Cloud Uninstaller',
+        'com.smileonmymac.textexpander' => 'TextExpander',
+        'org.pqrs.Karabiner-AXNotifier' => 'Karabiner Notifier',
+        'com.apple.DiskImageMounter' => 'Apple Disk Image Mounter'
       }
       specials.each { |k, v| @names[k] = v }
       return @names

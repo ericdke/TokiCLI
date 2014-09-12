@@ -8,23 +8,29 @@ module TokiCLI
     require 'amalgalite'
 
     require_relative 'helpers'
+    require_relative 'toki_db'
 
-    attr_accessor :db, :bundles
+    attr_accessor :bundles
 
     def initialize(db_path, bundles = nil)
-      @table = 'KKAppActivity'
-      @db = Amalgalite::Database.new(db_path)
+      @db = TokiDB.new(db_path)
       @helpers = Helpers.new
       @bundles = bundles
     end
 
     def apps_total
-      resp = @db.execute("SELECT bundleIdentifier,sum(totalSeconds) FROM #{@table} GROUP BY bundleIdentifier")
+      resp = @db.apps_total
       request = {command: 'apps_total', args: [], processed_at: Time.now}
       return no_resp(request) if resp.empty?
       result = make_apps_objects(resp)
       list = result.sort_by {|obj| obj[:total][:seconds]}
-      return {
+      return make_basic_response(request, list)
+    end
+
+    private
+
+    def make_basic_response(request, list)
+      {
         meta: {
           code: 200,
           request: request
@@ -32,8 +38,6 @@ module TokiCLI
         data: list
       }.to_json
     end
-
-    private
 
     def make_apps_objects(db_resp)
       if @bundles.nil?
