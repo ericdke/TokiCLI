@@ -30,12 +30,9 @@ module TokiCLI
     def total
       init() # Alternative: init(true). Backups the db before using it.
       apps = @toki.apps_total() # gets the JSON response from TokiAPI
-      if options[:json] || options[:csv]
-        @fileops.export(@toki, options) # the response was stocked in @toki when .apps_total was called
-      else
-        title = "Toki - Total usage of all apps"
-        @view.apps_total(apps, title) # Title is optional: @view.apps_total(apps)
-      end
+      export(@toki, options) # the response was stocked in @toki when .apps_total was called
+      title = "Toki - Total usage of all apps"
+      @view.apps_total(apps, title) # Title is optional: @view.apps_total(apps)
     end
 
     desc "top", "Most used apps"
@@ -46,14 +43,18 @@ module TokiCLI
       init()
       max = options[:number] || 5
       apps = @toki.apps_top(max)
-      if options[:json] || options[:csv]
-        @fileops.export(@toki, options)
-      else
-        @view.apps_total(apps, "Toki - Total usage of most used apps")
-      end
+      export(@toki, options)
+      @view.apps_total(apps, "Toki - Total usage of most used apps")
     end
 
     private
+
+    def export(toki, options)
+      if options[:json] || options[:csv]
+        @fileops.export(toki, options)
+        exit
+      end
+    end
 
     # Replaces usual initialize method
     def init(backup = false)
