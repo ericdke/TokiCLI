@@ -25,20 +25,26 @@ module TokiCLI
     end
 
     desc "total", "Total usage of all apps"
+    option :json, aliases: '-J', type: :boolean, desc: 'Export the results in a JSON file'
+    option :csv, aliases: '-C', type: :boolean, desc: 'Export the results in a CSV file'
     def total
       init() # Alternative: init(true). Backups the db before using it.
       apps = @toki.apps_total # gets the JSON response from TokiAPI
-      title = "Toki - Total usage of all apps"
-      @view.apps_total(apps, title) # Title is optional: @view.apps_total(apps)
+      if options[:json] || options[:csv]
+        @fileops.export(@toki, options) # the response was stocked in @toki when .apps_total was called
+      else
+        title = "Toki - Total usage of all apps"
+        @view.apps_total(apps, title) # Title is optional: @view.apps_total(apps)
+      end
     end
 
     private
 
     # Replaces usual initialize method
     def init(backup = false)
-      fileops = FileOps.new
-      fileops.backup_db if backup == true
-      @toki = TokiAPI.new(fileops.db_path, fileops.bundles) # fileops.bundles is optional
+      @fileops = FileOps.new
+      @fileops.backup_db if backup == true
+      @toki = TokiAPI.new(@fileops.db_path, @fileops.bundles) # @fileops.bundles is optional
       @view = View.new
     end
 

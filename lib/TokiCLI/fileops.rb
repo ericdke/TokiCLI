@@ -33,6 +33,27 @@ module TokiCLI
       File.write(@bundles_path, @bundles.to_json)
     end
 
+    def export(toki, options)
+      response = JSON.parse(toki.response)
+      type = response['meta']['request']['type']
+      prefix = response['meta']['request']['processed_at'][0..9]
+      if options[:json]
+        path = "#{@toki_path}/data/#{prefix}_#{type}.json"
+        File.write(path, toki.response)
+        puts Status.file_saved(path)
+      elsif options[:csv]
+        if type == 'apps'
+          # TODO
+          # CSV.open(name, "wb") do |csv|
+          #   csv << ['Bundle Identifier', 'Name', 'Total seconds', 'Total time']
+          #   data.each {|line| csv << [line[:bundle], line[:name], line[:total][:seconds], line[:total][:time]]}
+          # end
+        elsif type == 'log'
+          # TODO
+        end
+      end
+    end
+
     private
 
     def make_toki_dirs

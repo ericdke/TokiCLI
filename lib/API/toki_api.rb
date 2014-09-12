@@ -10,7 +10,7 @@ module TokiCLI
     require_relative 'helpers'
     require_relative 'toki_db'
 
-    attr_accessor :bundles
+    attr_reader :bundles, :response
 
     def initialize(db_path, bundles = nil)
       @db = TokiDB.new(db_path)
@@ -19,12 +19,12 @@ module TokiCLI
     end
 
     def apps_total
+      request = {command: 'apps_total', type: 'apps', args: [], processed_at: Time.now}
       resp = @db.apps_total
-      request = {command: 'apps_total', args: [], processed_at: Time.now}
       return no_resp(request) if resp.empty?
       result = make_apps_objects(resp)
       list = result.sort_by {|obj| obj[:total][:seconds]}
-      return make_basic_response(request, list)
+      @response = make_basic_response(request, list)
     end
 
     private
