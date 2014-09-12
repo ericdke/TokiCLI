@@ -12,23 +12,12 @@ module TokiCLI
       @toki_path = "#{@home_path}/.TokiCLI"
       @db_path = "#{@home_path}/Library/Containers/us.kkob.Toki/Data/Documents/toki_data.sqlite3"
       @bundles_path = "#{@toki_path}/data/bundles.json"
+      make_toki_dirs()
       @bundles = load_bundles()
     end
 
     def backup_db
-      make_toki_dir()
-      if File.exist?(@db_path)
-        FileUtils.copy(@db_path, "#{@toki_path}/backup/toki_data.sqlite3.bak")
-      else
-        raise "File does not exist: #{@db_path}"
-      end
-    end
-
-    def make_toki_dir
-      FileUtils.mkdir_p(@toki_path) unless Dir.exist?(@toki_path)
-      FileUtils.mkdir("#{@toki_path}/backup") unless Dir.exist?("#{@toki_path}/backup")
-      FileUtils.mkdir("#{@toki_path}/data") unless Dir.exist?("#{@toki_path}/data")
-      FileUtils.mkdir("#{@toki_path}/config") unless Dir.exist?("#{@toki_path}/config")
+      FileUtils.copy(@db_path, "#{@toki_path}/backup/toki_data.sqlite3.bak")
     end
 
     def load_bundles
@@ -39,16 +28,19 @@ module TokiCLI
       end
     end
 
-    def get_bundles
-      get_bundle_ids()
-    end
-
     def save_bundles
       @bundles = get_bundle_ids()
       File.write(@bundles_path, @bundles.to_json)
     end
 
     private
+
+    def make_toki_dirs
+      FileUtils.mkdir_p(@toki_path) unless Dir.exist?(@toki_path)
+      FileUtils.mkdir("#{@toki_path}/backup") unless Dir.exist?("#{@toki_path}/backup")
+      FileUtils.mkdir("#{@toki_path}/data") unless Dir.exist?("#{@toki_path}/data")
+      FileUtils.mkdir("#{@toki_path}/config") unless Dir.exist?("#{@toki_path}/config")
+    end
 
     # Scan for names from bundle ids
     def get_bundle_ids
