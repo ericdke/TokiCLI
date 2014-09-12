@@ -1,32 +1,3 @@
-- [TokiCLI](#tokicli)
-  - [Installation](#installation)
-  - [Usage](#usage)
-    - [Total](#total)
-    - [Top](#top)
-    - [Day](#day)
-    - [Since](#since)
-    - [Before](#before)
-    - [Range](#range)
-    - [App](#app)
-    - [App before](#app-before)
-    - [App since](#app-since)
-    - [App day](#app-day)
-    - [App range](#app-range)
-    - [Log](#log)
-    - [Scan](#scan)
-    - [Auth](#auth)
-    - [Global option: JSON](#global-option-json)
-    - [Global option: CSV](#global-option-csv)
-    - [Restore database from App.net](#restore-database-from-appnet)
-- [API](#api)
-  - [Local server for the API](#local-server-for-the-api)
-  - [Endpoints](#endpoints)
-  - [Tools](#tools)
-- [Toki](#toki)
-  - [Important](#important)
-  - [Next](#next)
-  - [Thanks](#thanks)
-
 # TokiCLI
 
 Toki.app command-line client and API server. 
@@ -208,15 +179,33 @@ curl http://localhost:4567/api/apps/range/2014-05-27/2014-05-30
 
 Remove the "/api" part of the URL to access rendered views of the responses.  
 
-## Endpoints  
+## Library  
 
-You can also use the TokiCLI API in another app.
+You can also use the TokiCLI API in another app:
 
 `require 'TokiCLI'`  
 
+### Basic
+
+Create a basic TokiCLI API instance:
+
+`toki = TokiCLI::TokiAPI.new("#{~/Library/path/to/tokiapp/db}")`
+
+### With apps names
+
+Create a TokiCLI FileOps instance:
+
+`fileops = TokiCLI::FileOps.new`
+
+Scan for apps names (see ##Tools):
+
+`fileops.save_bundles`
+
 Create a TokiCLI API instance:
 
-`toki = TokiCLI::DBAPI.new`
+`toki = TokiCLI::TokiAPI.new(fileops.db_path, fileops.bundles)`
+
+### Endpoints
 
 Get the total time for an app, in seconds, given its exact bundle identifier:
 
@@ -285,18 +274,13 @@ With a (partial) name:
 
 ## Tools
 
-Scan disk for installed apps, get their names from their bundle identifiers and save the file (ignores unresolved identifiers):
+Scan disk for installed apps and save the file:
 
-`app_names = toki.scan_apps`
+`fileops.save_bundles`
 
-Get apps names and bundle identifiers (without re-scanning, and including unresolved identifiers):
+The file will be automatically loaded in new FileOps instances:
 
-`app_names = toki.tracked_apps`
-
-Get bundle_id from app name or partial app name:
-
-`bundle_id = toki.get_bundle_from_name 'sublime'`  
-
+`app_names = fileops.bundles`
 
 # Toki
 

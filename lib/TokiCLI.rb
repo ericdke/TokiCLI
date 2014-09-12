@@ -28,10 +28,10 @@ module TokiCLI
     option :json, aliases: '-J', type: :boolean, desc: 'Export the results in a JSON file'
     option :csv, aliases: '-C', type: :boolean, desc: 'Export the results in a CSV file'
     def total
-      # Alternative: init(true). Backups the db before using it.
+      # Replace with init(true) to backup the db before using it
       init()
       # Gets the JSON response from TokiAPI
-      # The response is stocked in @toki when @toki methods are called
+      # The response is stocked in @toki.response when a @toki method is called
       apps = @toki.apps_total()
       # Exports only if options are present, then exits
       export(@toki, options)
