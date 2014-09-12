@@ -37,21 +37,26 @@ module TokiCLI
       response = JSON.parse(toki.response)
       type = response['meta']['request']['type']
       prefix = response['meta']['request']['processed_at'][0..9]
+      path = "#{@toki_path}/data/#{prefix}_#{type}"
       if options[:json]
-        path = "#{@toki_path}/data/#{prefix}_#{type}.json"
-        File.write(path, toki.response)
-        puts Status.file_saved(path)
+        file = "#{path}.json"
+        File.write(file, toki.response)
       elsif options[:csv]
+        file = "#{path}.csv"
         if type == 'apps'
-          # TODO
-          # CSV.open(name, "wb") do |csv|
-          #   csv << ['Bundle Identifier', 'Name', 'Total seconds', 'Total time']
-          #   data.each {|line| csv << [line[:bundle], line[:name], line[:total][:seconds], line[:total][:time]]}
-          # end
+          CSV.open(file, "wb") do |csv|
+            csv << ['Bundle', 'Name', 'Total', 'Hours', 'Minutes', 'Seconds']
+            response['data'].each do |line|
+              csv << [line['bundle'], line['name'], line['total']['seconds'], line['total']['time']['hours'], line['total']['time']['minutes'], line['total']['time']['seconds']]
+            end
+          end
         elsif type == 'log'
           # TODO
         end
+      else
+        abort(Status.wtf)
       end
+      puts Status.file_saved(file)
     end
 
     private
