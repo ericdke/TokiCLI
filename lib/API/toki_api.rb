@@ -6,21 +6,36 @@ module TokiCLI
 
     require 'json'
     require 'amalgalite'
-    require 'CFPropertyList'
 
     require_relative 'helpers'
 
     attr_accessor :db
 
-    def initialize(toki_db)
+    def initialize(db_path)
       @table = 'KKAppActivity'
-      @db = toki_db
+      @db = Amalgalite::Database.new(db_path)
       @helpers = Helpers.new
     end
 
     def apps_total
       resp = @db.execute("SELECT bundleIdentifier,sum(totalSeconds) FROM #{@table} GROUP BY bundleIdentifier")
-      result = resp.map do |id, sec|
+      request = {command: 'apps_total', args: [], processed_at: Time.now}
+      return no_resp(request) if resp.empty?
+      result = make_apps_objects(resp)
+      list = result.sort_by {|obj| obj[:total][:seconds]}
+      return {
+        meta: {
+          code: 200,
+          request: request
+        },
+        data: list
+      }.to_json
+    end
+
+    private
+
+    def make_apps_objects(db_resp)
+      db_resp.map do |id, sec|
         {
           bundle: id,
           # name: @helpers.find_app_name(id),
@@ -30,8 +45,16 @@ module TokiCLI
           }
         }
       end
-      result.sort_by! {|obj| obj[:total][:seconds]}
-      result.to_json
+    end
+
+    def no_resp(request)
+      {
+        meta: {
+          code: 422,
+          request: request
+        },
+        data: []
+      }.to_json
     end
 
   end

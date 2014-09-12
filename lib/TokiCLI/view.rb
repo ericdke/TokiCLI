@@ -6,11 +6,16 @@ module TokiCLI
 
     require 'terminal-table'
 
-    # def initialize
+    def version
+      table = init_table()
+      table.title = "TokiCLI for Toki.app"
+      table << ['Version', VERSION]
+      table << :separator
+      table << ['Infos', 'http://github.com/ericdke/TokiCLI']
+      puts "\n#{table}\n"
+    end
 
-    # end
-
-    def apps_total(data)
+    def apps_total(data) # accepts json
       # table = init_table()
       # if data['data']['apps']
       #   if data['data']['date']
@@ -24,16 +29,20 @@ module TokiCLI
       #   puts total_3(data, table)
       # end
       # puts "\n"
-      require 'pp'
-      pp data
+      puts data
     end
 
     private
 
     def init_table
       Terminal::Table.new do |t|
-        t.style = { :width => 75 }
+        t.style = { :width => 80 }
       end
+    end
+
+    def max_width(width, txt)
+      boundary = width - 3
+      text.length >= width ? "#{text[0..boundary]}..." : text
     end
 
   end

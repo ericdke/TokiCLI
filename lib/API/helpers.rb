@@ -4,9 +4,7 @@ module TokiCLI
 
   class Helpers
 
-    # def initialize
-
-    # end
+    require 'CFPropertyList'
 
     def sec_to_time(secs)
       begin
