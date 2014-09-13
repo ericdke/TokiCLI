@@ -17,6 +17,14 @@ module TokiCLI
       @db.execute("SELECT bundleIdentifier,sum(totalSeconds) FROM #{@table} WHERE activeFrom >= #{starting} AND activeFrom < #{ending} GROUP BY bundleIdentifier")
     end
 
+    def apps_since(day)
+      @db.execute("SELECT bundleIdentifier,sum(totalSeconds) FROM #{@table} WHERE activeFrom >= #{day} GROUP BY bundleIdentifier")
+    end
+
+    def apps_before(day)
+      @db.execute("SELECT bundleIdentifier,sum(totalSeconds) FROM #{@table} WHERE activeFrom < #{day} GROUP BY bundleIdentifier")
+    end
+
   end
 
 end

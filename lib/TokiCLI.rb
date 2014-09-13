@@ -78,6 +78,28 @@ module TokiCLI
       export(@toki, options)
     end
 
+    desc "since DATE", "All apps used since a specific day"
+    option :json, aliases: '-J', type: :boolean, desc: 'Export the results in a JSON file'
+    option :csv, aliases: '-C', type: :boolean, desc: 'Export the results in a CSV file'
+    def since(*args)
+      init()
+      @toki.apps_since(args[0])
+      exit_with_msg_if_invalid_response()
+      @view.apps_total(@toki.response, "Toki - All apps used since #{args[0]}")
+      export(@toki, options)
+    end
+
+    desc "before DATE", "All apps used before a specific day"
+    option :json, aliases: '-J', type: :boolean, desc: 'Export the results in a JSON file'
+    option :csv, aliases: '-C', type: :boolean, desc: 'Export the results in a CSV file'
+    def before(*args)
+      init()
+      @toki.apps_before(args[0])
+      exit_with_msg_if_invalid_response()
+      @view.apps_total(@toki.response, "Toki - All apps used before #{args[0]}")
+      export(@toki, options)
+    end
+
 
     private
 

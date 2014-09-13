@@ -49,6 +49,22 @@ module TokiCLI
       return response_wrapper(request, resp)
     end
 
+    def apps_since(day)
+      request = {command: 'apps_since', type: 'apps', args: [day], processed_at: Time.now}
+      starting = @helpers.check_date_validity(day)
+      return invalid_response(request) if starting == false
+      resp = @db.apps_since(starting.to_time.to_i)
+      return response_wrapper(request, resp)
+    end
+
+    def apps_before(day)
+      request = {command: 'apps_before', type: 'apps', args: [day], processed_at: Time.now}
+      ending = @helpers.check_date_validity(day)
+      return invalid_response(request) if ending == false
+      resp = @db.apps_before(ending.to_time.to_i)
+      return response_wrapper(request, resp)
+    end
+
     private
 
     def response_wrapper(request, resp)
