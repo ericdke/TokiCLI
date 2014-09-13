@@ -56,7 +56,34 @@ module TokiCLI
       export(@toki, options)
     end
 
+    desc "day DATE", "All apps used on a specific day"
+    option :json, aliases: '-J', type: :boolean, desc: 'Export the results in a JSON file'
+    option :csv, aliases: '-C', type: :boolean, desc: 'Export the results in a CSV file'
+    def day(*args)
+      init()
+      @toki.apps_day(args[0])
+      exit_with_msg_if_invalid_response()
+      @view.apps_total(@toki.response, "Toki - All apps used on #{args[0]}")
+      export(@toki, options)
+    end
+
+    desc "range DATE1 DATE2", "All apps used between two specific days"
+    option :json, aliases: '-J', type: :boolean, desc: 'Export the results in a JSON file'
+    option :csv, aliases: '-C', type: :boolean, desc: 'Export the results in a CSV file'
+    def range(*args)
+      init()
+      @toki.apps_range(args[0], args[1])
+      exit_with_msg_if_invalid_response()
+      @view.apps_total(@toki.response, "Toki - All apps used between #{args[0]} and #{args[1]}")
+      export(@toki, options)
+    end
+
+
     private
+
+    def exit_with_msg_if_invalid_response(msg = Status.wtf)
+      abort(msg) if JSON.parse(@toki.response)['meta']['code'] != 200
+    end
 
     def export(toki, options)
       if options[:json] || options[:csv]

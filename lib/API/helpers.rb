@@ -15,6 +15,14 @@ module TokiCLI
       end
     end
 
+    def check_date_validity(day)
+      begin
+        DateTime.strptime(day, '%Y-%m-%d')
+      rescue ArgumentError, TypeError => e
+        false
+      end
+    end
+
   end
 
 end

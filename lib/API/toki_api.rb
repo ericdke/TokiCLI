@@ -21,22 +21,47 @@ module TokiCLI
     def apps_total
       request = {command: 'apps_total', type: 'apps', args: [], processed_at: Time.now}
       resp = @db.apps_total
-      list = make_apps_list(request, resp)
-      @response = make_basic_response(request, list)
+      return response_wrapper(request, resp)
     end
 
     def apps_top(number = 5)
       request = {command: 'apps_top', type: 'apps', args: [number], processed_at: Time.now}
       resp = @db.apps_total
+      return invalid_response(request) if resp.empty?
       index = -number
       list = make_apps_list(request, resp)[index..-1]
       @response = make_basic_response(request, list)
     end
 
+    def apps_day(day)
+      request = {command: 'apps_day', type: 'apps', args: [day], processed_at: Time.now}
+      date = @helpers.check_date_validity(day)
+      return invalid_response(request) if date == false
+      resp = @db.apps_range(date.to_time.to_i, date.next_day.to_time.to_i)
+      return response_wrapper(request, resp)
+    end
+
+    def apps_range(day1, day2)
+      request = {command: 'apps_range', type: 'apps', args: [day1, day2], processed_at: Time.now}
+      starting, ending = @helpers.check_date_validity(day1), @helpers.check_date_validity(day2)
+      return invalid_response(request) if starting == false || ending == false || starting > ending
+      resp = @db.apps_range(starting.to_time.to_i, ending.to_time.to_i)
+      return response_wrapper(request, resp)
+    end
+
     private
 
+    def response_wrapper(request, resp)
+      return invalid_response(request) if resp.empty?
+      list = make_apps_list(request, resp)
+      @response = make_basic_response(request, list)
+    end
+
+    def invalid_response(request)
+      @response = no_resp(request)
+    end
+
     def make_apps_list(request, resp)
-      return no_resp(request) if resp.empty?
       result = make_apps_objects(resp)
       result.sort_by {|obj| obj[:total][:seconds]}
     end

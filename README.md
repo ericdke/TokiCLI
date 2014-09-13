@@ -130,23 +130,23 @@ Just do `toki auth` and follow the steps, this is fast and easy.
 
 ### Global option: JSON
 
-Export the Toki results as a JSON file with the `-j` option:
+Export the Toki results as a JSON file with the `--json` option:
 
-`toki total -j`
+`toki total --json`
 
-`toki day 2014-04-18 -j`
+`toki day --json 2014-04-18`
 
-`toki top -n 10 -j` 
+`toki top -n10 -J` 
 
 ### Global option: CSV
 
-Export the Toki results as a CSV file with the `-c` option:
+Export the Toki results as a CSV file with the `--csv` option:
 
-`toki total -c`
+`toki total --csv`
 
-`toki day 2014-04-18 -c`
+`toki day --csv 2014-04-18`
 
-`toki top -n 10 -c` 
+`toki top -n10 -C` 
 
 ### Restore database from App.net
 
