@@ -34,7 +34,7 @@ module TokiCLI
     end
 
     def get_bundle_from_name(name)
-      app_name = name.downcase
+      app_name = name.map {|n| n.downcase}.join(' ')
       candidates = []
       @bundles.each do |bundle_id, bundle_name|
         if bundle_name.downcase =~ /#{app_name}/

@@ -26,7 +26,7 @@ module TokiCLI
       table = init_table(title)
       table.headings = ['Start', 'Duration', 'Sync ID']
       lines = make_log_lines(log)
-      total =total_from_log_lines(lines)
+      total = total_from_log_lines(lines)
       puts "\nPlease wait while generating the results table...\n\n"
       puts populate_log_table(lines, table, total)
     end
