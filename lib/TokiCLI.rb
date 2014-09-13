@@ -28,12 +28,16 @@ module TokiCLI
     option :json, aliases: '-J', type: :boolean, desc: 'Export the results in a JSON file'
     option :csv, aliases: '-C', type: :boolean, desc: 'Export the results in a CSV file'
     def total
-      # Replace with init(true) to backup the db before using it
+      # Initializes files and instances
+      ## Replace with init(true) to backup the db before using it
+      ## Not necessary for read-only commands like this one
       init()
       # Gets the JSON response from TokiAPI
-      # The response is stocked in @toki.response when a @toki method is called
+      ## Here the response is stocked locally in 'apps' but using a variable is optional:
+      ## the response is memoized in @toki.response when a @toki method is called
+      ## (see other commands)
       apps = @toki.apps_total()
-      # Exports only if options are present, then exits
+      # Exports then exits, only if options are present
       export(@toki, options)
       # Title is optional: @view.apps_total(apps)
       title = "Toki - Total usage of all apps"
@@ -47,9 +51,9 @@ module TokiCLI
     def top
       init()
       max = options[:number] || 5
-      apps = @toki.apps_top(max)
+      @toki.apps_top(max)
       export(@toki, options)
-      @view.apps_total(apps, "Toki - Total usage of most used apps")
+      @view.apps_total(@toki.response, "Toki - Total usage of most used apps")
     end
 
     private
