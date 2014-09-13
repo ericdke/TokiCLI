@@ -100,6 +100,17 @@ module TokiCLI
       export(@toki, options)
     end
 
+    desc "log APP", "Complete log for an app"
+    option :json, aliases: '-j', type: :boolean, desc: 'Export the results as a JSON file'
+    option :csv, aliases: '-c', type: :boolean, desc: 'Export the results as a CSV file'
+    def log(app)
+      init()
+      @toki.bundle_log(app)
+      exit_with_msg_if_invalid_response()
+      @view.log_table(@toki.response, "Toki - Complete log for #{app}")
+      export(@toki, options)
+    end
+
 
     private
 

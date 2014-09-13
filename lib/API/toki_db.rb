@@ -25,6 +25,10 @@ module TokiCLI
       @db.execute("SELECT bundleIdentifier,sum(totalSeconds) FROM #{@table} WHERE activeFrom < #{day} GROUP BY bundleIdentifier")
     end
 
+    def bundle_log(bundle)
+       @db.execute("SELECT * FROM #{@table} WHERE bundleIdentifier IS '#{bundle}'")
+    end
+
   end
 
 end

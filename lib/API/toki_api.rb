@@ -21,7 +21,7 @@ module TokiCLI
     def apps_total
       request = {command: 'apps_total', type: 'apps', args: [], processed_at: Time.now}
       resp = @db.apps_total
-      return response_wrapper(request, resp)
+      return apps_response_wrapper(request, resp)
     end
 
     def apps_top(number = 5)
@@ -38,7 +38,7 @@ module TokiCLI
       date = @helpers.check_date_validity(day)
       return invalid_response(request) if date == false
       resp = @db.apps_range(date.to_time.to_i, date.next_day.to_time.to_i)
-      return response_wrapper(request, resp)
+      return apps_response_wrapper(request, resp)
     end
 
     def apps_range(day1, day2)
@@ -46,7 +46,7 @@ module TokiCLI
       starting, ending = @helpers.check_date_validity(day1), @helpers.check_date_validity(day2)
       return invalid_response(request) if starting == false || ending == false || starting > ending
       resp = @db.apps_range(starting.to_time.to_i, ending.to_time.to_i)
-      return response_wrapper(request, resp)
+      return apps_response_wrapper(request, resp)
     end
 
     def apps_since(day)
@@ -54,7 +54,7 @@ module TokiCLI
       starting = @helpers.check_date_validity(day)
       return invalid_response(request) if starting == false
       resp = @db.apps_since(starting.to_time.to_i)
-      return response_wrapper(request, resp)
+      return apps_response_wrapper(request, resp)
     end
 
     def apps_before(day)
@@ -62,12 +62,20 @@ module TokiCLI
       ending = @helpers.check_date_validity(day)
       return invalid_response(request) if ending == false
       resp = @db.apps_before(ending.to_time.to_i)
-      return response_wrapper(request, resp)
+      return apps_response_wrapper(request, resp)
+    end
+
+    def bundle_log(bundle)
+      request = {command: 'bundle_log', type: 'log', args: [bundle], processed_at: Time.now}
+      resp = @db.bundle_log(bundle)
+      return invalid_response(request) if resp.empty?
+      list = make_log_objects(resp)
+      @response = make_basic_response(request, list)
     end
 
     private
 
-    def response_wrapper(request, resp)
+    def apps_response_wrapper(request, resp)
       return invalid_response(request) if resp.empty?
       list = make_apps_list(request, resp)
       @response = make_basic_response(request, list)
@@ -115,6 +123,21 @@ module TokiCLI
           }
         end
       end
+    end
+
+    def make_log_objects(db_resp)
+      result = {}
+      sorted = db_resp.sort_by { |arr| arr[2] }
+      sorted.each do |arr|
+        result[arr[0]] = {
+          start: @helpers.epoch_to_date(arr[2]),
+          duration: {
+            seconds: arr[4],
+            time: @helpers.sec_to_time(arr[4])
+          }
+        }
+      end
+      return result
     end
 
     def no_resp(request)

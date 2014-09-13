@@ -15,6 +15,10 @@ module TokiCLI
       end
     end
 
+    def epoch_to_date(epoch)
+      Time.at(epoch).to_time
+    end
+
     def check_date_validity(day)
       begin
         DateTime.strptime(day, '%Y-%m-%d')
