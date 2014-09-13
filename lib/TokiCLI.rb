@@ -37,11 +37,11 @@ module TokiCLI
       ## the response is memoized in @toki.response when a @toki method is called
       ## (see other commands)
       apps = @toki.apps_total()
-      # Exports then exits, only if options are present
-      export(@toki, options)
       # Title is optional: @view.apps_total(apps)
       title = "Toki - Total usage of all apps"
       @view.apps_total(apps, title)
+      # Exports only if options are present
+      export(@toki, options)
     end
 
     desc "top", "Most used apps"
@@ -52,8 +52,8 @@ module TokiCLI
       init()
       max = options[:number] || 5
       @toki.apps_top(max)
-      export(@toki, options)
       @view.apps_total(@toki.response, "Toki - Total usage of most used apps")
+      export(@toki, options)
     end
 
     private
@@ -61,7 +61,6 @@ module TokiCLI
     def export(toki, options)
       if options[:json] || options[:csv]
         @fileops.export(toki, options)
-        exit
       end
     end
 
