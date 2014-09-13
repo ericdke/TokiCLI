@@ -100,10 +100,10 @@ module TokiCLI
       export(@toki, options)
     end
 
-    desc "bundle_log BUNDLE_ID", "Complete log for an app from its exact bundle id"
+    desc "bundle BUNDLE_ID", "Complete log for an app from its exact bundle id"
     option :json, aliases: '-J', type: :boolean, desc: 'Export the results as a JSON file'
     option :csv, aliases: '-C', type: :boolean, desc: 'Export the results as a CSV file'
-    def bundle_log(bundle_id)
+    def bundle(bundle_id)
       init()
       @toki.bundle_log(bundle_id)
       exit_with_msg_if_invalid_response()
@@ -111,10 +111,10 @@ module TokiCLI
       export(@toki, options)
     end
 
-    desc "app_log APP_NAME", "Complete log for an app from (part of) its name"
+    desc "app APP_NAME", "Complete log for an app from (part of) its name"
     option :json, aliases: '-J', type: :boolean, desc: 'Export the results as a JSON file'
     option :csv, aliases: '-C', type: :boolean, desc: 'Export the results as a CSV file'
-    def app_log(*app_name)
+    def app(*app_name)
       init()
       abort(Status.please_scan) if @fileops.bundles.nil?
       candidates = @fileops.get_bundle_from_name(app_name)
