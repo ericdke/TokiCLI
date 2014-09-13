@@ -44,17 +44,9 @@ module TokiCLI
       elsif options[:csv]
         file = "#{path}.csv"
         if type == 'apps'
-          CSV.open(file, "wb") do |csv|
-            csv << ['Bundle', 'Name', 'Total', 'Hours', 'Minutes', 'Seconds']
-            response['data'].each do |line|
-              csv << [line['bundle'], line['name'], line['total']['seconds'], line['total']['time']['hours'], line['total']['time']['minutes'], line['total']['time']['seconds']]
-            end
-          end
+          export_apps_csv(response, file)
         elsif type == 'log'
-          CSV.open(file, "wb") do |csv|
-            csv << ['Start', 'Duration (seconds)', 'Minutes', 'Seconds', 'Sync ID']
-            response['data'].each {|line| csv << [line[1]['start'], line[1]['duration']['seconds'], line[1]['duration']['time']['minutes'], line[1]['duration']['time']['seconds'], line[0]]}
-          end
+          export_log_csv(response, file)
         end
       else
         abort(Status.wtf)
@@ -63,6 +55,22 @@ module TokiCLI
     end
 
     private
+
+    def export_apps_csv(response, file)
+      CSV.open(file, "wb") do |csv|
+        csv << ['Bundle', 'Name', 'Total', 'Hours', 'Minutes', 'Seconds']
+        response['data'].each do |line|
+          csv << [line['bundle'], line['name'], line['total']['seconds'], line['total']['time']['hours'], line['total']['time']['minutes'], line['total']['time']['seconds']]
+        end
+      end
+    end
+
+    def export_log_csv(response, file)
+      CSV.open(file, "wb") do |csv|
+        csv << ['Start', 'Duration (seconds)', 'Minutes', 'Seconds', 'Sync ID']
+        response['data'].each {|line| csv << [line[1]['start'], line[1]['duration']['seconds'], line[1]['duration']['time']['minutes'], line[1]['duration']['time']['seconds'], line[0]]}
+      end
+    end
 
     def make_toki_dirs
       FileUtils.mkdir_p(@toki_path) unless Dir.exist?(@toki_path)
