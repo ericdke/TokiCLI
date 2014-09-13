@@ -41,7 +41,7 @@ module TokiCLI
     end
 
     def make_log_lines(log)
-      log.map { |k, v| [v['start'], readable_time(v['duration']['time']), k, v['duration']['seconds']] }
+      log.map { |k, v| [v['start'], readable_time_log(v['duration']['time']), k, v['duration']['seconds']] }
     end
 
     def total_from_log_lines(lines)
@@ -85,13 +85,15 @@ module TokiCLI
       "#{'%.2d' % obj['hours']}h #{'%.2d' % obj['minutes']}m #{'%.2d' % obj['seconds']}s"
     end
 
+    def readable_time_log(obj)
+      "#{'%.2d' % obj['minutes']}m #{'%.2d' % obj['seconds']}s"
+    end
+
     def sec_to_time(secs)
-      begin
-        hours = secs / 3600
-        minutes = (secs / 60 - hours * 60)
-        seconds = (secs - (minutes * 60 + hours * 3600))
-        {'hours' => hours, 'minutes' => minutes, 'seconds' => seconds}
-      end
+      hours = secs / 3600
+      minutes = (secs / 60 - hours * 60)
+      seconds = (secs - (minutes * 60 + hours * 3600))
+      {'hours' => hours, 'minutes' => minutes, 'seconds' => seconds}
     end
 
   end

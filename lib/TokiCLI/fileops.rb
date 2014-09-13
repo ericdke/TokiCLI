@@ -51,7 +51,10 @@ module TokiCLI
             end
           end
         elsif type == 'log'
-          # TODO
+          CSV.open(file, "wb") do |csv|
+            csv << ['Start', 'Duration (seconds)', 'Minutes', 'Seconds', 'Sync ID']
+            response['data'].each {|line| csv << [line[1]['start'], line[1]['duration']['seconds'], line[1]['duration']['time']['minutes'], line[1]['duration']['time']['seconds'], line[0]]}
+          end
         end
       else
         abort(Status.wtf)
