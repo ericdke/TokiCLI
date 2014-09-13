@@ -31,6 +31,12 @@ module TokiCLI
         "Starting with next launch, TokiCLI will display apps names. Run `toki scan` again to update the apps list.\n\n"
       end
 
+      def more_than_one(list)
+        puts "\nThere's more than one possibility. Please use `--bundle BUNDLE_NAME` instead of `APP_NAME`.\n\nFound:\n\n"
+        list.each {|obj| puts "#{obj}\n"}
+        puts "\n"
+      end
+
     end
 
     extend ClassMethods # This is a way to avoid having to declare self.xxx for each def

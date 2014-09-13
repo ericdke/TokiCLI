@@ -33,6 +33,17 @@ module TokiCLI
       File.write(@bundles_path, @bundles.to_json)
     end
 
+    def get_bundle_from_name(name)
+      app_name = name.downcase
+      candidates = []
+      @bundles.each do |bundle_id, bundle_name|
+        if bundle_name.downcase =~ /#{app_name}/
+          candidates << bundle_id
+        end
+      end
+      return candidates
+    end
+
     def export(toki, options)
       response = JSON.parse(toki.response)
       type = response['meta']['request']['type']

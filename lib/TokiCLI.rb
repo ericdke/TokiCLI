@@ -9,7 +9,7 @@ module TokiCLI
     require_relative 'API/toki_api'
     %w{version status fileops view}.each {|r| require_relative "TokiCLI/#{r}"}
 
-    desc "version", "Display TokiCLI version number"
+    desc "version", "TokiCLI version number"
     map "-v" => :version
     def version
       View.new.version
@@ -100,14 +100,14 @@ module TokiCLI
       export(@toki, options)
     end
 
-    desc "log APP", "Complete log for an app"
+    desc "log BUNDLE_ID", "Complete log for an app from its bundle id"
     option :json, aliases: '-J', type: :boolean, desc: 'Export the results as a JSON file'
     option :csv, aliases: '-C', type: :boolean, desc: 'Export the results as a CSV file'
-    def log(app)
+    def log(bundle_id)
       init()
-      @toki.bundle_log(app)
+      @toki.bundle_log(bundle_id)
       exit_with_msg_if_invalid_response()
-      @view.log_table(@toki.response, "Toki - Complete log for #{app}")
+      @view.log_table(@toki.response, "Toki - Complete log for #{bundle_id}")
       export(@toki, options)
     end
 
