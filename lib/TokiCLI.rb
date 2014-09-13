@@ -119,7 +119,7 @@ module TokiCLI
       abort(Status.please_scan) if @fileops.bundles.nil?
       candidates = @fileops.get_bundle_from_name(app_name)
       candidates.each.with_index(1) do |bundle_id, index|
-        puts "\nApp N°#{'%.2d' % index}: #{bundle_id}\n"
+        puts "\nApp N°#{'%.2d' % index}: #{bundle_id}\n" if candidates.length > 1
         @toki.bundle_log(bundle_id)
         if JSON.parse(@toki.response)['meta']['code'] != 200
           puts "\nError, skipping this app.\n\n"
