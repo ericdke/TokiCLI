@@ -58,7 +58,7 @@ module TokiCLI
       if options[:json] || options[:csv]
         export(@toki, options)
       else
-        @view.apps_total(@toki.response, "Toki - Total usage of most used apps")
+        @view.apps_top(@toki.response, "Toki - Total usage of most used apps")
       end
     end
 
@@ -161,24 +161,25 @@ module TokiCLI
 
     # ---
 
-    desc "delete BUNDLE_ID", "Permanently deletes this application from the database"
+    desc "delete BUNDLE_ID", "Permanently delete this application from the database"
     option :no_backup, aliases: '-X',type: :boolean, desc: 'Do not backup the database before processing'
     def delete(bundle_id)
       options[:no_backup] ? init() : init(true)
       name = @fileops.bundles[bundle_id]
-      name.nil? ? insert = '' : insert = " (#{name})"
-      xx = ask("\nAre you sure you want to remove all '#{bundle_id}'#{insert} entries from the database ?\n\nType 'yes' to confirm.\n\n>> ")
-      abort("\nCanceled.\n\n") if xx.downcase != 'yes'
+      confirm_delete(bundle_id, name)
       puts "\nDeleting entries...\n"
       @toki.delete_bundle(bundle_id)
-      if JSON.parse(@toki.response)['meta']['code'] == 200
-        puts "\nDone.\n\n"
-      else
-        puts Status.wtf
-      end
+      exit_with_msg_if_invalid_response(Status.wtf)
+      puts "\nDone.\n\n"
     end
 
     private
+
+    def confirm_delete(bundle_id, name)
+      name.nil? ? insert = '' : insert = " (#{name})"
+      xx = ask("\nAre you sure you want to remove all '#{bundle_id}'#{insert} entries from the database ?\n\nType 'yes' to confirm.\n\n>> ")
+      abort("\nCanceled.\n\n") if xx != 'yes'
+    end
 
     def bundle_log(bundle_id, options)
       if options[:since]

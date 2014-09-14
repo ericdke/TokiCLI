@@ -23,11 +23,19 @@ module TokiCLI
     end
 
     def apps_total(api_response, title = "Your apps monitored by Toki")
-      apps = JSON.parse(api_response)['data']
-      table = init_table(title)
-      table.headings = ['Bundle ID', 'Name', 'Total']
+      table, apps = make_apps_total(api_response, title)
       puts "\n"
-      puts populate_apps_table(apps, table)
+      display, total = populate_apps_table(table, apps)
+      display << :separator
+      display << [{ :value => "Total: #{readable_time(sec_to_time(total))}", :colspan => 3, :alignment => :center }]
+      puts display
+    end
+
+    def apps_top(api_response, title = "Your apps monitored by Toki")
+      table, apps = make_apps_total(api_response, title)
+      puts "\n"
+      display, _ = populate_apps_table(table, apps)
+      puts display
     end
 
     def log_table(api_response, title = "Your app monitored by Toki")
@@ -50,6 +58,13 @@ module TokiCLI
         t.style = { :width => @settings['table']['width'] }
         t.title = title
       end
+    end
+
+    def make_apps_total(api_response, title)
+      apps = JSON.parse(api_response)['data']
+      table = init_table(title)
+      table.headings = ['Bundle ID', 'Name', 'Total']
+      return table, apps
     end
 
     def make_log_lines(log)
@@ -76,29 +91,29 @@ module TokiCLI
         table << [line[0][10..18], line[1], line[2]]
         day = new_day
       end
-      table << :separator
-      table << [{ :value => "Total: #{readable_time(sec_to_time(total))}", :colspan => 3, :alignment => :center }]
-      return table
+      return table, total
     end
 
-    def populate_apps_table(apps, table)
+    def populate_apps_table(table, apps)
+      total = 0
       apps.each do |app|
+        total += app['total']['seconds']
         if app['name']
           table << app_row_with_name(app)
         else
           table << app_row(app)
         end
       end
-      return table
+      return table, total
     end
 
     def app_row_with_name(obj)
       max = @settings['table']['width'] / 3
-      [width(max, obj['bundle']), width(max, obj['name']), readable_time(obj['total']['time'])]
+      [width(max + 5, obj['bundle']), width(max - 5, obj['name']), readable_time(obj['total']['time'])]
     end
 
     def app_row(obj)
-      max = @settings['table']['width'] / 3
+      max = @settings['table']['width'] / 2
       [width(max, obj['bundle']), '(unknown)', readable_time(obj['total']['time'])]
     end
 
