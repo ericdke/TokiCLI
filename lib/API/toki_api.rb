@@ -86,11 +86,24 @@ module TokiCLI
       resp = @db.bundle_log_range(bundle, starting.to_time.to_i, ending.to_time.to_i)
       return response_wrapper(request, resp) { make_log_objects(resp) }
     end
-
     def bundle_log_day(bundle, day)
       starting = @helpers.check_date_validity(day)
       next_day = starting.next_day.strftime('%Y-%m-%d')
       bundle_log_range(bundle, day, next_day)
+    end
+
+    # ---
+
+    def delete_bundle(bundle_id)
+      request = {command: 'delete_bundle', type: 'action', args: [bundle_id], processed_at: Time.now}
+      resp = @db.delete_bundle(bundle_id)
+      if resp.empty? # success
+        resp = [{'deleted' => bundle_id}]
+        @response = make_basic_response(request, resp)
+      else
+        @response = no_resp(request)
+      end
+      return @response
     end
 
     private
