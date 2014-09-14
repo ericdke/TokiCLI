@@ -107,17 +107,9 @@ module TokiCLI
     option :day, type: :string, desc: 'Request log for a specific day'
     def bundle(bundle_id)
       init()
-      title = "Toki - Complete log for #{bundle_id}"
-      if options[:since]
-        @toki.bundle_log_since(bundle_id, options[:since])
-        title += " since #{options[:since]}"
-      elsif options[:day]
-        @toki.bundle_log_day(bundle_id, options[:day])
-        title += " for #{options[:day]}"
-      else
-        @toki.bundle_log(bundle_id)
-      end
-      exit_with_msg_if_invalid_response()
+      title = bundle_title(bundle_id, options)
+      bundle_log(bundle_id, options)
+      exit_with_msg_if_invalid_response(Status.no_data)
       @view.log_table(@toki.response, title)
       export(@toki, options)
     end
@@ -125,24 +117,46 @@ module TokiCLI
     desc "app APP_NAME", "Show complete log for an app from (part of) its name"
     option :json, aliases: '-J', type: :boolean, desc: 'Export the results as a JSON file'
     option :csv, aliases: '-C', type: :boolean, desc: 'Export the results as a CSV file'
+    option :since, type: :string, desc: 'Request log starting on this date'
+    option :day, type: :string, desc: 'Request log for a specific day'
     def app(*app_name)
       init()
       abort(Status.please_scan) if @fileops.bundles.nil?
       candidates = @fileops.get_bundle_from_name(app_name)
       candidates.each.with_index(1) do |bundle_id, index|
         puts "\nApp N°#{'%.2d' % index}: #{bundle_id}\n" if candidates.length > 1
-        @toki.bundle_log(bundle_id)
+        bundle_log(bundle_id, options)
         if JSON.parse(@toki.response)['meta']['code'] != 200
-          puts "\nError, skipping this app.\n\n"
-          next
+          puts Status.no_data
+        else
+          @view.log_table(@toki.response, bundle_title(bundle_id, options))
+          export(@toki, options)
         end
-        @view.log_table(@toki.response, "Toki - Complete log for #{bundle_id}")
-        export(@toki, options)
       end
     end
 
-
     private
+
+    def bundle_log(bundle_id, options)
+      if options[:since]
+        @toki.bundle_log_since(bundle_id, options[:since])
+      elsif options[:day]
+        @toki.bundle_log_day(bundle_id, options[:day])
+      else
+        @toki.bundle_log(bundle_id)
+      end
+    end
+
+    def bundle_title(bundle_id, options)
+      prefix = "Toki - Complete log for #{bundle_id}"
+      if options[:since]
+        "#{prefix} since #{options[:since]}"
+      elsif options[:day]
+        "#{prefix} for #{options[:day]}"
+      else
+        prefix
+      end
+    end
 
     def exit_with_msg_if_invalid_response(msg = Status.wtf)
       abort(msg) if JSON.parse(@toki.response)['meta']['code'] != 200

@@ -8,11 +8,17 @@ module TokiCLI
       def version(version)
         "\n-- TokiCLI --\n\nVersion:\t#{version}\nUrl:\t\thttp://github.com/ericdke/TokiCLI\n\n"
       end
+
       def wtf
         "\nAn error occurred! Goodbye, and thanks for all the fish.\n\n"
       end
+
       def no_plist
         "Unable to read the file, skipping...\n"
+      end
+
+      def no_data
+        "\nNo data for this request.\n\n"
       end
 
       def analysing(obj)
