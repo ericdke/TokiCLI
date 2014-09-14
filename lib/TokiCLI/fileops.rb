@@ -47,11 +47,15 @@ module TokiCLI
       return candidates
     end
 
-    def export(toki, options)
+    def export(toki, options, title = nil)
       response = JSON.parse(toki.response)
       type = response['meta']['request']['type']
       prefix = response['meta']['request']['processed_at'][0..9]
-      path = "#{@toki_path}/data/#{prefix}_#{type}"
+      path = if title.nil?
+        "#{@toki_path}/data/#{prefix}_#{type}"
+      else
+        "#{@toki_path}/data/#{prefix}_#{type}_#{title.tr_s(' ', '-')}"
+      end
       if options[:json]
         file = "#{path}.json"
         File.write(file, toki.response)

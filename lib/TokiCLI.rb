@@ -37,11 +37,14 @@ module TokiCLI
       ## the response is memoized in @toki.response when a @toki method is called
       ## (see other commands)
       apps = @toki.apps_total()
-      # Title is optional: @view.apps_total(apps)
-      title = "Toki - Total usage of all apps"
-      @view.apps_total(apps, title)
-      # Exports only if options are present
-      export(@toki, options)
+      # Export or display
+      if options[:json] || options[:csv]
+        export(@toki, options)
+      else
+        # Title is optional: @view.apps_total(apps)
+        title = "Toki - Total usage of all apps"
+        @view.apps_total(apps, title)
+      end
     end
 
     desc "top", "Show total for most used apps"
@@ -52,8 +55,11 @@ module TokiCLI
       init()
       max = options[:number] || 5
       @toki.apps_top(max)
-      @view.apps_total(@toki.response, "Toki - Total usage of most used apps")
-      export(@toki, options)
+      if options[:json] || options[:csv]
+        export(@toki, options)
+      else
+        @view.apps_total(@toki.response, "Toki - Total usage of most used apps")
+      end
     end
 
     desc "day DATE", "Show total for apps used on a specific day"
@@ -63,8 +69,11 @@ module TokiCLI
       init()
       @toki.apps_day(args[0])
       exit_with_msg_if_invalid_response()
-      @view.apps_total(@toki.response, "Toki - All apps used on #{args[0]}")
-      export(@toki, options)
+      if options[:json] || options[:csv]
+        export(@toki, options)
+      else
+        @view.apps_total(@toki.response, "Toki - All apps used on #{args[0]}")
+      end
     end
 
     desc "range DATE1 DATE2", "Show total for all apps used between two specific days"
@@ -74,8 +83,11 @@ module TokiCLI
       init()
       @toki.apps_range(args[0], args[1])
       exit_with_msg_if_invalid_response()
-      @view.apps_total(@toki.response, "Toki - All apps used between #{args[0]} and #{args[1]}")
-      export(@toki, options)
+      if options[:json] || options[:csv]
+        export(@toki, options)
+      else
+        @view.apps_total(@toki.response, "Toki - All apps used between #{args[0]} and #{args[1]}")
+      end
     end
 
     desc "since DATE", "Show total for all apps used since a specific day"
@@ -85,8 +97,11 @@ module TokiCLI
       init()
       @toki.apps_since(args[0])
       exit_with_msg_if_invalid_response()
-      @view.apps_total(@toki.response, "Toki - All apps used since #{args[0]}")
-      export(@toki, options)
+      if options[:json] || options[:csv]
+        export(@toki, options)
+      else
+        @view.apps_total(@toki.response, "Toki - All apps used since #{args[0]}")
+      end
     end
 
     desc "before DATE", "Show total for all apps used before a specific day"
@@ -96,8 +111,11 @@ module TokiCLI
       init()
       @toki.apps_before(args[0])
       exit_with_msg_if_invalid_response()
-      @view.apps_total(@toki.response, "Toki - All apps used before #{args[0]}")
-      export(@toki, options)
+      if options[:json] || options[:csv]
+        export(@toki, options)
+      else
+        @view.apps_total(@toki.response, "Toki - All apps used before #{args[0]}")
+      end
     end
 
     desc "bundle BUNDLE_ID", "Show complete log for an app from its exact bundle id"
@@ -110,8 +128,11 @@ module TokiCLI
       title = bundle_title(bundle_id, options)
       bundle_log(bundle_id, options)
       exit_with_msg_if_invalid_response(Status.no_data)
-      @view.log_table(@toki.response, title)
-      export(@toki, options)
+      if options[:json] || options[:csv]
+        export(@toki, options)
+      else
+        @view.log_table(@toki.response, title)
+      end
     end
 
     desc "app APP_NAME", "Show complete log for an app from (part of) its name"
@@ -129,8 +150,11 @@ module TokiCLI
         if JSON.parse(@toki.response)['meta']['code'] != 200
           puts Status.no_data
         else
-          @view.log_table(@toki.response, bundle_title(bundle_id, options))
-          export(@toki, options)
+          if options[:json] || options[:csv]
+            export(@toki, options, bundle_id)
+          else
+            @view.log_table(@toki.response, bundle_title(bundle_id, options))
+          end
         end
       end
     end
@@ -162,10 +186,8 @@ module TokiCLI
       abort(msg) if JSON.parse(@toki.response)['meta']['code'] != 200
     end
 
-    def export(toki, options)
-      if options[:json] || options[:csv]
-        @fileops.export(toki, options)
-      end
+    def export(toki, options, title = nil)
+      @fileops.export(toki, options, title)
     end
 
     # Replaces usual initialize method
