@@ -103,9 +103,14 @@ module TokiCLI
     desc "bundle BUNDLE_ID", "Complete log for an app from its exact bundle id"
     option :json, aliases: '-J', type: :boolean, desc: 'Export the results as a JSON file'
     option :csv, aliases: '-C', type: :boolean, desc: 'Export the results as a CSV file'
+    option :since, type: :string, desc: 'Request log starting on this date'
     def bundle(bundle_id)
       init()
-      @toki.bundle_log(bundle_id)
+      if options[:since]
+        @toki.bundle_log_since(bundle_id, options[:since])
+      else
+        @toki.bundle_log(bundle_id)
+      end
       exit_with_msg_if_invalid_response()
       @view.log_table(@toki.response, "Toki - Complete log for #{bundle_id}")
       export(@toki, options)

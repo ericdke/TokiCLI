@@ -25,8 +25,28 @@ module TokiCLI
       @db.execute("SELECT bundleIdentifier,sum(totalSeconds) FROM #{@table} WHERE activeFrom < #{day} GROUP BY bundleIdentifier")
     end
 
-    def bundle_log(bundle)
-       @db.execute("SELECT * FROM #{@table} WHERE bundleIdentifier IS '#{bundle}'")
+    # Get the log for an app given its exact bundle identifier
+    def bundle_log(bundle_id)
+       @db.execute("SELECT * FROM #{@table} WHERE bundleIdentifier IS '#{bundle_id}'")
+    end
+    def bundle_log_since(bundle_id, starting)
+       @db.execute("SELECT * FROM #{@table} WHERE bundleIdentifier IS '#{bundle_id}' AND activeFrom >= #{starting}")
+    end
+    def bundle_log_before(bundle_id, date)
+       @db.execute("SELECT * FROM #{@table} WHERE bundleIdentifier IS '#{bundle_id}' AND activeFrom < #{date}")
+    end
+    def bundle_log_range(bundle_id, starting, ending)
+       @db.execute("SELECT * FROM #{@table} WHERE bundleIdentifier IS '#{bundle_id}' AND activeFrom >= #{starting} AND activeFrom < #{ending}")
+    end
+
+    # Get the total time for an app given its exact bundle identifier, since a specific day
+    def bundle_total_since(bundle_id, starting)
+      @db.execute("SELECT sum(totalSeconds) FROM #{@table} WHERE bundleIdentifier IS '#{bundle_id}' AND activeFrom >= #{starting}")
+    end
+
+    # Get the total time for an app given its exact bundle identifier, before a specific day
+    def bundle_total_before(bundle_id, ending)
+      @db.execute("SELECT sum(totalSeconds) FROM #{@table} WHERE bundleIdentifier IS '#{bundle_id}' AND activeFrom < #{ending}")
     end
 
   end
