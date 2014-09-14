@@ -21,7 +21,7 @@ module TokiCLI
     def apps_total
       request = {command: 'apps_total', type: 'apps', args: [], processed_at: Time.now}
       resp = @db.apps_total
-      return wrapper(request, resp) { make_apps_list(resp) }
+      return response_wrapper(request, resp) { make_apps_list(resp) }
     end
 
     def apps_top(number = 5)
@@ -38,7 +38,7 @@ module TokiCLI
       date = @helpers.check_date_validity(day)
       return invalid_response(request) if date == false
       resp = @db.apps_range(date.to_time.to_i, date.next_day.to_time.to_i)
-      return wrapper(request, resp) { make_apps_list(resp) }
+      return response_wrapper(request, resp) { make_apps_list(resp) }
     end
 
     def apps_range(day1, day2)
@@ -46,7 +46,7 @@ module TokiCLI
       starting, ending = @helpers.check_date_validity(day1), @helpers.check_date_validity(day2)
       return invalid_response(request) if starting == false || ending == false || starting > ending
       resp = @db.apps_range(starting.to_time.to_i, ending.to_time.to_i)
-      return wrapper(request, resp) { make_apps_list(resp) }
+      return response_wrapper(request, resp) { make_apps_list(resp) }
     end
 
     def apps_since(day)
@@ -54,7 +54,7 @@ module TokiCLI
       starting = @helpers.check_date_validity(day)
       return invalid_response(request) if starting == false
       resp = @db.apps_since(starting.to_time.to_i)
-      return wrapper(request, resp) { make_apps_list(resp) }
+      return response_wrapper(request, resp) { make_apps_list(resp) }
     end
 
     def apps_before(day)
@@ -62,26 +62,40 @@ module TokiCLI
       ending = @helpers.check_date_validity(day)
       return invalid_response(request) if ending == false
       resp = @db.apps_before(ending.to_time.to_i)
-      return wrapper(request, resp) { make_apps_list(resp) }
+      return response_wrapper(request, resp) { make_apps_list(resp) }
     end
 
     def bundle_log(bundle)
       request = {command: 'bundle_log', type: 'log', args: [bundle], processed_at: Time.now}
       resp = @db.bundle_log(bundle)
-      return wrapper(request, resp) { make_log_objects(resp) }
+      return response_wrapper(request, resp) { make_log_objects(resp) }
     end
 
     def bundle_log_since(bundle, date)
       request = {command: 'bundle_log_since', type: 'log', args: [bundle, date], processed_at: Time.now}
-      day = @helpers.check_date_validity(date)
-      return invalid_response(request) if day == false
-      resp = @db.bundle_log_since(bundle, day.to_time.to_i)
-      return wrapper(request, resp) { make_log_objects(resp) }
+      starting = @helpers.check_date_validity(date)
+      return invalid_response(request) if starting == false
+      resp = @db.bundle_log_since(bundle, starting.to_time.to_i)
+      return response_wrapper(request, resp) { make_log_objects(resp) }
+    end
+
+    def bundle_log_range(bundle, day1, day2)
+      request = {command: 'bundle_log_range', type: 'log', args: [bundle, day1, day2], processed_at: Time.now}
+      starting, ending = @helpers.check_date_validity(day1), @helpers.check_date_validity(day2)
+      return invalid_response(request) if starting == false || ending == false || starting > ending
+      resp = @db.bundle_log_range(bundle, starting.to_time.to_i, ending.to_time.to_i)
+      return response_wrapper(request, resp) { make_log_objects(resp) }
+    end
+
+    def bundle_log_day(bundle, day)
+      starting = @helpers.check_date_validity(day)
+      next_day = starting.next_day.strftime('%Y-%m-%d')
+      bundle_log_range(bundle, day, next_day)
     end
 
     private
 
-    def wrapper(request, resp)
+    def response_wrapper(request, resp)
       return invalid_response(request) if resp.empty?
       list = yield
       @response = make_basic_response(request, list)

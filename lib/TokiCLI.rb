@@ -15,7 +15,7 @@ module TokiCLI
       View.new.version
     end
 
-    desc "scan", "Scan the computer for applications names"
+    desc "scan", "Scan applications folders for full names"
     def scan
       puts Status.scanning
       fileops = FileOps.new
@@ -24,7 +24,7 @@ module TokiCLI
       puts Status.next_launch_with_names
     end
 
-    desc "total", "All apps"
+    desc "total", "Show total for all apps"
     option :json, aliases: '-J', type: :boolean, desc: 'Export the results in a JSON file'
     option :csv, aliases: '-C', type: :boolean, desc: 'Export the results in a CSV file'
     def total
@@ -44,7 +44,7 @@ module TokiCLI
       export(@toki, options)
     end
 
-    desc "top", "Most used apps"
+    desc "top", "Show total for most used apps"
     option :number, aliases: '-n', type: :numeric, desc: 'Specify the number of apps'
     option :json, aliases: '-J', type: :boolean, desc: 'Export the results in a JSON file'
     option :csv, aliases: '-C', type: :boolean, desc: 'Export the results in a CSV file'
@@ -56,7 +56,7 @@ module TokiCLI
       export(@toki, options)
     end
 
-    desc "day DATE", "All apps used on a specific day"
+    desc "day DATE", "Show total for apps used on a specific day"
     option :json, aliases: '-J', type: :boolean, desc: 'Export the results in a JSON file'
     option :csv, aliases: '-C', type: :boolean, desc: 'Export the results in a CSV file'
     def day(*args)
@@ -67,7 +67,7 @@ module TokiCLI
       export(@toki, options)
     end
 
-    desc "range DATE1 DATE2", "All apps used between two specific days"
+    desc "range DATE1 DATE2", "Show total for all apps used between two specific days"
     option :json, aliases: '-J', type: :boolean, desc: 'Export the results in a JSON file'
     option :csv, aliases: '-C', type: :boolean, desc: 'Export the results in a CSV file'
     def range(*args)
@@ -78,7 +78,7 @@ module TokiCLI
       export(@toki, options)
     end
 
-    desc "since DATE", "All apps used since a specific day"
+    desc "since DATE", "Show total for all apps used since a specific day"
     option :json, aliases: '-J', type: :boolean, desc: 'Export the results in a JSON file'
     option :csv, aliases: '-C', type: :boolean, desc: 'Export the results in a CSV file'
     def since(*args)
@@ -89,7 +89,7 @@ module TokiCLI
       export(@toki, options)
     end
 
-    desc "before DATE", "All apps used before a specific day"
+    desc "before DATE", "Show total for all apps used before a specific day"
     option :json, aliases: '-J', type: :boolean, desc: 'Export the results in a JSON file'
     option :csv, aliases: '-C', type: :boolean, desc: 'Export the results in a CSV file'
     def before(*args)
@@ -100,23 +100,29 @@ module TokiCLI
       export(@toki, options)
     end
 
-    desc "bundle BUNDLE_ID", "Complete log for an app from its exact bundle id"
+    desc "bundle BUNDLE_ID", "Show complete log for an app from its exact bundle id"
     option :json, aliases: '-J', type: :boolean, desc: 'Export the results as a JSON file'
     option :csv, aliases: '-C', type: :boolean, desc: 'Export the results as a CSV file'
     option :since, type: :string, desc: 'Request log starting on this date'
+    option :day, type: :string, desc: 'Request log for a specific day'
     def bundle(bundle_id)
       init()
+      title = "Toki - Complete log for #{bundle_id}"
       if options[:since]
         @toki.bundle_log_since(bundle_id, options[:since])
+        title += " since #{options[:since]}"
+      elsif options[:day]
+        @toki.bundle_log_day(bundle_id, options[:day])
+        title += " for #{options[:day]}"
       else
         @toki.bundle_log(bundle_id)
       end
       exit_with_msg_if_invalid_response()
-      @view.log_table(@toki.response, "Toki - Complete log for #{bundle_id}")
+      @view.log_table(@toki.response, title)
       export(@toki, options)
     end
 
-    desc "app APP_NAME", "Complete log for an app from (part of) its name"
+    desc "app APP_NAME", "Show complete log for an app from (part of) its name"
     option :json, aliases: '-J', type: :boolean, desc: 'Export the results as a JSON file'
     option :csv, aliases: '-C', type: :boolean, desc: 'Export the results as a CSV file'
     def app(*app_name)
