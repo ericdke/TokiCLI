@@ -78,11 +78,13 @@ module TokiCLI
     end
 
     def app_row_with_name(obj)
-      [width(30, obj['bundle']), width(30, obj['name']), readable_time(obj['total']['time'])]
+      max = @settings['table']['width'] / 3
+      [width(max, obj['bundle']), width(max, obj['name']), readable_time(obj['total']['time'])]
     end
 
     def app_row(obj)
-      [width(30, obj['bundle']), '(unknown)', readable_time(obj['total']['time'])]
+      max = @settings['table']['width'] / 3
+      [width(max, obj['bundle']), '(unknown)', readable_time(obj['total']['time'])]
     end
 
     def width(width, text)
