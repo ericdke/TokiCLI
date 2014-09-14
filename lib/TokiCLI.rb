@@ -144,7 +144,7 @@ module TokiCLI
     option :day, type: :string, desc: 'Request log for a specific day'
     def app(*app_name)
       init()
-      abort(Status.please_scan) if @fileops.bundles.nil?
+      abort(Status.please_scan) if @toki.bundles.nil?
       candidates = @fileops.get_bundle_from_name(app_name)
       candidates.each.with_index(1) do |bundle_id, index|
         puts "\nApp N°#{'%.2d' % index}: #{bundle_id}\n" if candidates.length > 1
@@ -169,7 +169,7 @@ module TokiCLI
     option :no_backup, aliases: '-X',type: :boolean, desc: 'Do not backup the database before processing'
     def delete(bundle_id)
       options[:no_backup] ? init() : init(true)
-      name = @fileops.bundles[bundle_id]
+      name = @toki.bundles[bundle_id]
       confirm_delete(bundle_id, name)
       puts "\nDeleting entries...\n"
       @toki.delete_bundle(bundle_id)
