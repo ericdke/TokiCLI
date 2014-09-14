@@ -37,8 +37,10 @@ module TokiCLI
       lines = make_log_lines(log)
       total = total_from_log_lines(lines)
       display = populate_log_table(lines, table, total)
-      # puts "\nPlease wait while the terminal buffers the results table...\n\n"
-      puts "\n#{display}"
+      puts "\nRendering the view, please wait.\n\n"
+      lines = display.render
+      puts "\e[H\e[2J"
+      puts lines
     end
 
     private
@@ -61,7 +63,12 @@ module TokiCLI
     end
 
     def populate_log_table(lines, table, total)
-      lines.each { |line| table << [line[0], line[1], line[2]] }
+      year = lines[0][0][0..9]
+      lines.each do |line|
+        table << :separator unless year == line[0][0..9]
+        table << [line[0], line[1], line[2]]
+        year = line[0][0..9]
+      end
       table << :separator
       table << [{ :value => "Total: #{readable_time(sec_to_time(total))}", :colspan => 3, :alignment => :center }]
       return table
