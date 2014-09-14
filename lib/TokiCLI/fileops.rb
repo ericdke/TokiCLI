@@ -4,16 +4,19 @@ module TokiCLI
 
     require 'fileutils'
     require 'CFPropertyList'
+    require 'yaml'
 
-    attr_accessor :home_path, :toki_path, :db_path, :bundles_path, :bundles
+    attr_accessor :home_path, :toki_path, :db_path, :bundles_path, :bundles, :config_path, :config
 
     def initialize
       @home_path = Dir.home
       @toki_path = "#{@home_path}/.TokiCLI"
       @db_path = "#{@home_path}/Library/Containers/us.kkob.Toki/Data/Documents/toki_data.sqlite3"
-      @bundles_path = "#{@toki_path}/data/bundles.json"
+      @bundles_path = "#{@toki_path}/files/bundles.json"
+      @config_path = "#{@toki_path}/config/config.yml"
       make_toki_dirs()
       @bundles = load_bundles()
+      @config = create_config()
     end
 
     def backup_db
@@ -84,10 +87,21 @@ module TokiCLI
     end
 
     def make_toki_dirs
-      FileUtils.mkdir_p(@toki_path) unless Dir.exist?(@toki_path)
-      FileUtils.mkdir("#{@toki_path}/backup") unless Dir.exist?("#{@toki_path}/backup")
-      FileUtils.mkdir("#{@toki_path}/data") unless Dir.exist?("#{@toki_path}/data")
-      FileUtils.mkdir("#{@toki_path}/config") unless Dir.exist?("#{@toki_path}/config")
+      %w{backup data files config}.each do |dir|
+        path = "#{@toki_path}/#{dir}"
+        FileUtils.mkdir_p(path) unless Dir.exist?(path)
+      end
+    end
+
+    def create_config
+      return YAML.load(File.read(@config_path)) if File.exist?(@config_path)
+      settings = {
+        'table' => {
+          'width' => 90
+        }
+      }
+      File.write(@config_path, settings.to_yaml)
+      return YAML.load(File.read(@config_path))
     end
 
     # Scan for names from bundle ids

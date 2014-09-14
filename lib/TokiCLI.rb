@@ -159,7 +159,7 @@ module TokiCLI
       @fileops = FileOps.new
       @fileops.backup_db if backup == true
       @toki = TokiAPI.new(@fileops.db_path, @fileops.bundles) # @fileops.bundles is optional
-      @view = View.new
+      @view = View.new(@fileops.config) # @fileops.config is optional
     end
 
   end

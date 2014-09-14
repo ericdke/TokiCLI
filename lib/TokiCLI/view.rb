@@ -6,6 +6,14 @@ module TokiCLI
 
     require 'terminal-table'
 
+    def initialize settings = {}
+      @settings = if settings.empty?
+        {"table"=>{"width"=>90}} # force default if no initialization
+      else
+        settings
+      end
+    end
+
     def version
       table = init_table("TokiCLI for Toki.app")
       table << ['Version', VERSION]
@@ -17,6 +25,7 @@ module TokiCLI
     def apps_total(api_response, title = "Your apps monitored by Toki")
       apps = JSON.parse(api_response)['data']
       table = init_table(title)
+      table.headings = ['Bundle ID', 'Name', 'Total']
       puts "\n"
       puts populate_apps_table(apps, table)
     end
@@ -35,7 +44,7 @@ module TokiCLI
 
     def init_table(title = 'TokiCLI')
       Terminal::Table.new do |t|
-        t.style = { :width => 90 }
+        t.style = { :width => @settings['table']['width'] }
         t.title = title
       end
     end
