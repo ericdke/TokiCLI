@@ -58,7 +58,7 @@ module TokiCLI
       if options[:json] || options[:csv]
         export(@toki, options)
       else
-        @view.apps_top(@toki.response, "Toki - Total usage of most used apps")
+        @view.apps(@toki.response, "Toki - Total usage of most used apps")
       end
     end
 
@@ -72,7 +72,7 @@ module TokiCLI
       if options[:json] || options[:csv]
         export(@toki, options)
       else
-        @view.apps_total(@toki.response, "Toki - All apps used on #{args[0]}")
+        @view.apps(@toki.response, "Toki - All apps used on #{args[0]}")
       end
     end
 
@@ -86,7 +86,7 @@ module TokiCLI
       if options[:json] || options[:csv]
         export(@toki, options)
       else
-        @view.apps_total(@toki.response, "Toki - All apps used between #{args[0]} and #{args[1]}")
+        @view.apps(@toki.response, "Toki - All apps used between #{args[0]} and #{args[1]}")
       end
     end
 
@@ -100,7 +100,7 @@ module TokiCLI
       if options[:json] || options[:csv]
         export(@toki, options)
       else
-        @view.apps_total(@toki.response, "Toki - All apps used since #{args[0]}")
+        @view.apps(@toki.response, "Toki - All apps used since #{args[0]}")
       end
     end
 
@@ -114,7 +114,7 @@ module TokiCLI
       if options[:json] || options[:csv]
         export(@toki, options)
       else
-        @view.apps_total(@toki.response, "Toki - All apps used before #{args[0]}")
+        @view.apps(@toki.response, "Toki - All apps used before #{args[0]}")
       end
     end
 
@@ -130,8 +130,10 @@ module TokiCLI
       exit_with_msg_if_invalid_response(Status.no_data)
       if options[:json] || options[:csv]
         export(@toki, options)
+      elsif options[:since] || options[:day]
+        @view.log(@toki.response, title)
       else
-        @view.log_table(@toki.response, title)
+        @view.log_total(@toki.response, title)
       end
     end
 
@@ -152,8 +154,10 @@ module TokiCLI
         else
           if options[:json] || options[:csv]
             export(@toki, options, bundle_id)
+          elsif options[:since] || options[:day]
+            @view.log(@toki.response, bundle_title(bundle_id, options))
           else
-            @view.log_table(@toki.response, bundle_title(bundle_id, options))
+            @view.log_total(@toki.response, bundle_title(bundle_id, options))
           end
         end
       end

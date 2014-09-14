@@ -23,28 +23,35 @@ module TokiCLI
     end
 
     def apps_total(api_response, title = "Your apps monitored by Toki")
-      table, apps = make_apps_total(api_response, title)
+      table, apps = make_apps_table(api_response, title)
       puts "\n"
       display, total = populate_apps_table(table, apps)
       display << :separator
-      display << [{ :value => "Total: #{readable_time(sec_to_time(total))}", :colspan => 3, :alignment => :center }]
+      display << insert_total_line(total)
+      puts "\e[H\e[2J"
       puts display
     end
 
-    def apps_top(api_response, title = "Your apps monitored by Toki")
-      table, apps = make_apps_total(api_response, title)
+    def apps(api_response, title = "Your apps monitored by Toki")
+      table, apps = make_apps_table(api_response, title)
       puts "\n"
       display, _ = populate_apps_table(table, apps)
+      puts "\e[H\e[2J"
       puts display
     end
 
-    def log_table(api_response, title = "Your app monitored by Toki")
-      log = JSON.parse(api_response)['data']
-      table = init_table(title)
-      table.headings = ['Start', 'Duration', 'Sync ID']
-      lines = make_log_lines(log)
-      total = total_from_log_lines(lines)
-      display = populate_log_table(lines, table, total)
+    def log(api_response, title = "Your app monitored by Toki")
+      display, _ = make_log_table(api_response, title)
+      puts "\nRendering the view, please wait.\n\n"
+      lines = display.render
+      puts "\e[H\e[2J"
+      puts lines
+    end
+
+    def log_total(api_response, title = "Your app monitored by Toki")
+      display, total = make_log_table(api_response, title)
+      display << :separator
+      display << insert_total_line(total)
       puts "\nRendering the view, please wait.\n\n"
       lines = display.render
       puts "\e[H\e[2J"
@@ -60,27 +67,34 @@ module TokiCLI
       end
     end
 
-    def make_apps_total(api_response, title)
+    def make_log_table(api_response, title)
+      log = JSON.parse(api_response)['data']
+      table = init_table(title)
+      table.headings = ['Start', 'Duration', 'Sync ID']
+      lines = make_log_lines(log)
+      return populate_log_table(lines, table)
+    end
+
+    def make_apps_table(api_response, title)
       apps = JSON.parse(api_response)['data']
       table = init_table(title)
       table.headings = ['Bundle ID', 'Name', 'Total']
       return table, apps
     end
 
+    def insert_total_line(total, text = 'Total')
+      [{ :value => "#{text}: #{readable_time(sec_to_time(total))}", :colspan => 3, :alignment => :center }]
+    end
+
     def make_log_lines(log)
       log.map { |k, v| [v['start'], readable_time_log(v['duration']['time']), k, v['duration']['seconds']] }
     end
 
-    def total_from_log_lines(lines)
-      total = 0
-      lines.each { |obj| total += obj[3] }
-      return total
-    end
-
-    def populate_log_table(lines, table, total)
+    def populate_log_table(lines, table)
       day = lines[0][0][0..9]
       table << [{ :value => "#{day}", :colspan => 3, :alignment => :center }]
       table << :separator
+      total = 0
       lines.each do |line|
         new_day = line[0][0..9]
         unless day == new_day
@@ -90,6 +104,7 @@ module TokiCLI
         end
         table << [line[0][10..18], line[1], line[2]]
         day = new_day
+        total += line[3]
       end
       return table, total
     end
@@ -123,7 +138,7 @@ module TokiCLI
     end
 
     def readable_time(obj)
-      "#{'%.2d' % obj['hours']}h #{'%.2d' % obj['minutes']}m #{'%.2d' % obj['seconds']}s"
+      "#{obj['hours']}h #{'%.2d' % obj['minutes']}m #{'%.2d' % obj['seconds']}s"
     end
 
     def readable_time_log(obj)
