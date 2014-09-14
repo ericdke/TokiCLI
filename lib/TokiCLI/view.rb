@@ -63,11 +63,18 @@ module TokiCLI
     end
 
     def populate_log_table(lines, table, total)
-      year = lines[0][0][0..9]
+      day = lines[0][0][0..9]
+      table << [{ :value => "#{day}", :colspan => 3, :alignment => :center }]
+      table << :separator
       lines.each do |line|
-        table << :separator unless year == line[0][0..9]
-        table << [line[0], line[1], line[2]]
-        year = line[0][0..9]
+        new_day = line[0][0..9]
+        unless day == new_day
+          table << :separator
+          table << [{ :value => "#{new_day}", :colspan => 3, :alignment => :center }]
+          table << :separator
+        end
+        table << [line[0][10..18], line[1], line[2]]
+        day = new_day
       end
       table << :separator
       table << [{ :value => "Total: #{readable_time(sec_to_time(total))}", :colspan => 3, :alignment => :center }]
