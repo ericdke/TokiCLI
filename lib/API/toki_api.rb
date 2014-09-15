@@ -10,7 +10,7 @@ module TokiCLI
     require_relative 'helpers'
     require_relative 'toki_db'
 
-    attr_reader :bundles, :response
+    attr_reader :bundles, :response, :helpers
 
     def initialize(db_path, bundles = nil)
       @db = TokiCLI::TokiDB.new(db_path)

@@ -203,7 +203,7 @@ Scan for apps names (see ##Tools):
 
 Create a TokiCLI API instance:
 
-`toki = TokiCLI::TokiAPI.new(fileops.db_path, fileops.bundles)`
+`toki = TokiCLI::TokiAPI.new(fileops.db_file, fileops.bundles)`
 
 ### Endpoints
 

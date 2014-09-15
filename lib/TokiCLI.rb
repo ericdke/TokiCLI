@@ -20,7 +20,7 @@ module TokiCLI
       puts Status.scanning
       fileops = FileOps.new
       fileops.save_bundles
-      puts Status.file_saved(fileops.bundles_path)
+      puts Status.file_saved(fileops.bundles_file)
       puts Status.next_launch_with_names
     end
 
@@ -252,7 +252,7 @@ module TokiCLI
     def init(backup = false)
       @fileops = FileOps.new
       @fileops.backup_db if backup == true
-      @toki = TokiAPI.new(@fileops.db_path, @fileops.bundles) # @fileops.bundles is optional
+      @toki = TokiAPI.new(@fileops.db_file, @fileops.bundles) # @fileops.bundles is optional
       @view = View.new(@fileops.config) # @fileops.config is optional
     end
 

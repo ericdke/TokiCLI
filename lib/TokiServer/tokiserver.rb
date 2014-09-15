@@ -34,17 +34,22 @@ class TokiServer < Sinatra::Application
   end
 
   fileops = TokiCLI::FileOps.new
-  toki = TokiCLI::TokiAPI.new(fileops.db_path, fileops.bundles)
+  toki = TokiCLI::TokiAPI.new(fileops.db_file, fileops.bundles)
   # itunesgrabber = ItunesIcon.new
 
+  # INDEX
   get '/' do
     erb :index
   end
 
+  # API ROUTES
+
   get '/api/apps/total/?' do
-    toki.apps_total
     content_type :json
-    toki.response
+    toki.apps_total
   end
+
+
+  # WEB ROUTES
 
 end

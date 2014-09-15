@@ -6,27 +6,31 @@ module TokiCLI
     require 'CFPropertyList'
     require 'yaml'
 
-    attr_accessor :home_path, :toki_path, :db_path, :bundles_path, :bundles, :config_path, :config, :data_path
+    attr_accessor :home_path, :toki_path, :db_path, :db_file, :bundles_file, :bundles, :config_file, :config_path, :config, :data_path, :files_path
 
     def initialize
       @home_path = Dir.home
       @toki_path = "#{@home_path}/.TokiCLI"
-      @db_path = "#{@home_path}/Library/Containers/us.kkob.Toki/Data/Documents/toki_data.sqlite3"
-      @bundles_path = "#{@toki_path}/files/bundles.json"
-      @config_path = "#{@toki_path}/config/config.yml"
       @data_path = "#{@toki_path}/data"
+      @config_path = "#{@toki_path}/config"
+      @files_path = "#{@toki_path}/files"
+      @backup_path = "#{@toki_path}/backup"
+      @db_path = "#{@home_path}/Library/Containers/us.kkob.Toki/Data/Documents"
+      @db_file = "#{@db_path}/toki_data.sqlite3"
+      @bundles_file = "#{@files_path}/bundles.json"
+      @config_file = "#{@config_path}/config.yml"
       make_toki_dirs()
       @bundles = load_bundles()
       @config = create_config()
     end
 
     def backup_db
-      FileUtils.copy(@db_path, "#{@toki_path}/backup/toki_data.sqlite3.bak")
+      FileUtils.copy(@db_file, "#{@backup_path}/toki_data.sqlite3.bak")
     end
 
     def load_bundles
-      if File.exist?(@bundles_path)
-        JSON.parse(File.read(@bundles_path))
+      if File.exist?(@bundles_file)
+        JSON.parse(File.read(@bundles_file))
       else
         nil
       end
@@ -34,7 +38,7 @@ module TokiCLI
 
     def save_bundles
       @bundles = get_bundle_ids()
-      File.write(@bundles_path, @bundles.to_json)
+      File.write(@bundles_file, @bundles.to_json)
     end
 
     def get_bundle_from_name(name)
@@ -53,9 +57,9 @@ module TokiCLI
       type = response['meta']['request']['type']
       prefix = response['meta']['request']['processed_at'][0..9]
       path = if title.nil?
-        "#{@toki_path}/data/#{prefix}_#{type}"
+        "#{@data_path}/#{prefix}_#{type}"
       else
-        "#{@toki_path}/data/#{prefix}_#{type}_#{title.tr_s(' ', '-')}"
+        "#{@data_path}/#{prefix}_#{type}_#{title.tr_s(' ', '-')}"
       end
       if options[:json]
         file = "#{path}.json"
@@ -99,14 +103,14 @@ module TokiCLI
     end
 
     def create_config
-      return YAML.load(File.read(@config_path)) if File.exist?(@config_path)
+      return YAML.load(File.read(@config_file)) if File.exist?(@config_file)
       settings = {
         'table' => {
           'width' => 90
         }
       }
-      File.write(@config_path, settings.to_yaml)
-      return YAML.load(File.read(@config_path))
+      File.write(@config_file, settings.to_yaml)
+      return YAML.load(File.read(@config_file))
     end
 
     # Scan for names from bundle ids

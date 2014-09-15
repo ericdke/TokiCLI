@@ -11,7 +11,7 @@ module TokiCLI
     attr_reader :token, :config
 
     def initialize(data_path)
-      @toki_db_path = "#{Dir.home}/Library/Containers/us.kkob.Toki/Data/Documents/toki_data.sqlite3"
+      @toki_db_file = "#{Dir.home}/Library/Containers/us.kkob.Toki/Data/Documents/toki_data.sqlite3"
       @data_path = data_path
       @user_file = "#{data_path}/user.json"
       @shell = Thor::Shell::Basic.new
@@ -193,8 +193,8 @@ module TokiCLI
     end
 
     def replace
-      FileUtils.mv @toki_db_path, "#{Dir.home}/.Trash/"
-      FileUtils.mv "#{@data_path}/db_from_adn.sqlite3", @toki_db_path
+      FileUtils.mv @toki_db_file, "#{Dir.home}/.Trash/"
+      FileUtils.mv "#{@data_path}/db_from_adn.sqlite3", @toki_db_file
     end
 
   end
