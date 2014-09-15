@@ -7,7 +7,7 @@ module TokiCLI
     package_name "TokiCLI"
 
     require_relative 'API/toki_api'
-    %w{version status fileops view}.each {|r| require_relative "TokiCLI/#{r}"}
+    %w{version status fileops view adnimport}.each {|r| require_relative "TokiCLI/#{r}"}
 
     desc "version", "TokiCLI version number"
     map "-v" => :version
@@ -176,6 +176,13 @@ module TokiCLI
           end
         end
       end
+    end
+
+    desc "restore", "Restore your database from the App.net backup"
+    def restore
+      init(true)
+      adn = ADNImport.new(@fileops.data_path)
+      adn.restore
     end
 
     # ---

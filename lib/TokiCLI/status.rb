@@ -5,6 +5,10 @@ module TokiCLI
 
     module ClassMethods
 
+      def canceled
+        "\nCanceled.\n\n"
+      end
+
       def version(version)
         "\n-- TokiCLI --\n\nVersion:\t#{version}\nUrl:\t\thttp://github.com/ericdke/TokiCLI\n\n"
       end

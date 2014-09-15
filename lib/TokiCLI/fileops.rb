@@ -6,7 +6,7 @@ module TokiCLI
     require 'CFPropertyList'
     require 'yaml'
 
-    attr_accessor :home_path, :toki_path, :db_path, :bundles_path, :bundles, :config_path, :config
+    attr_accessor :home_path, :toki_path, :db_path, :bundles_path, :bundles, :config_path, :config, :data_path
 
     def initialize
       @home_path = Dir.home
@@ -14,6 +14,7 @@ module TokiCLI
       @db_path = "#{@home_path}/Library/Containers/us.kkob.Toki/Data/Documents/toki_data.sqlite3"
       @bundles_path = "#{@toki_path}/files/bundles.json"
       @config_path = "#{@toki_path}/config/config.yml"
+      @data_path = "#{@toki_path}/data"
       make_toki_dirs()
       @bundles = load_bundles()
       @config = create_config()
