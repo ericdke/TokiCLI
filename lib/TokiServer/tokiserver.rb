@@ -42,6 +42,9 @@ class TokiServer < Sinatra::Application
     erb :index
   end
 
+  # WEB ROUTES
+
+
   # API ROUTES
 
   get '/api/apps/total/?' do
@@ -49,7 +52,16 @@ class TokiServer < Sinatra::Application
     toki.apps_total
   end
 
+  get '/api/apps/top/?:number?' do
+    content_type :json
+    if params[:number]
+      toki.apps_top(params[:number].to_i)
+    else
+      toki.apps_top()
+    end
+  end
 
-  # WEB ROUTES
+
+
 
 end
