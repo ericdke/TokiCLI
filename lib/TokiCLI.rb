@@ -120,9 +120,16 @@ module TokiCLI
 
     desc "activity", "Shows recent log updates"
     option :since, type: :string, desc: 'Request log starting on this date'
+    option :day, type: :string, desc: 'Request log for a specific day'
     def activity
       init()
-      options.since? ? @toki.activity(options.since) : @toki.activity()
+      if options.since?
+        @toki.log_since(options.since)
+      elsif options.day?
+        @toki.log_day(options.day)
+      else
+        @toki.log_since()
+      end
       @view.log_activity(@toki.response)
     end
 

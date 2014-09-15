@@ -52,6 +52,9 @@ module TokiCLI
     def log_since(day)
       @db.execute("SELECT * FROM #{@table} WHERE activeFrom >= #{day}")
     end
+    def log_range(starting, ending)
+      @db.execute("SELECT * FROM #{@table} WHERE activeFrom >= #{starting} AND activeFrom < #{ending}")
+    end
 
     # ---
 

@@ -88,18 +88,28 @@ module TokiCLI
     end
     def bundle_log_day(bundle, day)
       starting = @helpers.check_date_validity(day)
+      return invalid_response(request) if starting == false
       next_day = starting.next_day.strftime('%Y-%m-%d')
       bundle_log_range(bundle, day, next_day)
     end
 
-    def activity(day = nil)
-      request = {command: 'activity', type: 'log', args: [day], processed_at: Time.now}
+    def log_since(day = nil)
+      request = {command: 'log_since', type: 'log', args: [day], processed_at: Time.now}
       starting = if day.nil?
         @helpers.check_date_validity(Time.now.to_s[0..9])
       else
         @helpers.check_date_validity(day)
       end
       resp = @db.log_since(starting.to_time.to_i)
+      return response_wrapper(request, resp) { make_log_objects(resp) }
+    end
+
+    def log_day(day)
+      request = {command: 'log_range', type: 'log', args: [day], processed_at: Time.now}
+      starting = @helpers.check_date_validity(day)
+      return invalid_response(request) if starting == false
+      ending = @helpers.check_date_validity(starting.next_day.strftime('%Y-%m-%d'))
+      resp = @db.log_range(starting.to_time.to_i, ending.to_time.to_i)
       return response_wrapper(request, resp) { make_log_objects(resp) }
     end
 

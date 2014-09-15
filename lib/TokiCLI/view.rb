@@ -103,6 +103,8 @@ module TokiCLI
       day = lines[0][0][0..9]
       if with_bundle == false
         table << [{ :value => "#{day}", :colspan => 3, :alignment => :center }]
+      else
+        table << [{ :value => "#{day}", :colspan => 4, :alignment => :center }]
         table << :separator
       end
       total = 0
