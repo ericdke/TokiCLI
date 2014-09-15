@@ -92,6 +92,17 @@ module TokiCLI
       bundle_log_range(bundle, day, next_day)
     end
 
+    def activity(day = nil)
+      request = {command: 'activity', type: 'log', args: [day], processed_at: Time.now}
+      starting = if day.nil?
+        @helpers.check_date_validity(Time.now.to_s[0..9])
+      else
+        @helpers.check_date_validity(day)
+      end
+      resp = @db.log_since(starting.to_time.to_i)
+      return response_wrapper(request, resp) { make_log_objects(resp) }
+    end
+
     # ---
 
     def delete_bundle(bundle_id)
@@ -163,6 +174,7 @@ module TokiCLI
       sorted = db_resp.sort_by { |arr| arr[2] }
       sorted.each do |arr|
         result[arr[0]] = {
+          bundle: arr[1],
           start: @helpers.epoch_to_date(arr[2]),
           duration: {
             seconds: arr[4],

@@ -49,6 +49,10 @@ module TokiCLI
       @db.execute("SELECT sum(totalSeconds) FROM #{@table} WHERE bundleIdentifier IS '#{bundle_id}' AND activeFrom < #{ending}")
     end
 
+    def log_since(day)
+      @db.execute("SELECT * FROM #{@table} WHERE activeFrom >= #{day}")
+    end
+
     # ---
 
     def delete_bundle(bundle_id)

@@ -58,6 +58,15 @@ module TokiCLI
       puts lines
     end
 
+    def log_activity(api_response)
+      log = JSON.parse(api_response)['data']
+      table = init_table()
+      table.headings = ['Bundle', 'Start', 'Duration', 'Sync ID']
+      lines = make_log_lines(log)
+      display, _ = populate_log_table(lines, table, true)
+      puts display
+    end
+
     private
 
     def init_table(title = 'TokiCLI')
@@ -87,22 +96,33 @@ module TokiCLI
     end
 
     def make_log_lines(log)
-      log.map { |k, v| [v['start'], readable_time_log(v['duration']['time']), k, v['duration']['seconds']] }
+      log.map { |k, v| [v['start'], readable_time_log(v['duration']['time']), k, v['duration']['seconds'], v['bundle']] }
     end
 
-    def populate_log_table(lines, table)
+    def populate_log_table(lines, table, with_bundle = false)
       day = lines[0][0][0..9]
-      table << [{ :value => "#{day}", :colspan => 3, :alignment => :center }]
-      table << :separator
+      if with_bundle == false
+        table << [{ :value => "#{day}", :colspan => 3, :alignment => :center }]
+        table << :separator
+      end
       total = 0
-      lines.each do |line|
+      lines.each.with_index(1) do |line, index|
         new_day = line[0][0..9]
         unless day == new_day
           table << :separator
-          table << [{ :value => "#{new_day}", :colspan => 3, :alignment => :center }]
+          if with_bundle == false
+            table << [{ :value => "#{new_day}", :colspan => 3, :alignment => :center }]
+          else
+            table << [{ :value => "#{new_day}", :colspan => 4, :alignment => :center }]
+          end
           table << :separator
         end
-        table << [line[0][10..18], line[1], line[2]]
+        if with_bundle == false
+          table << [line[0][10..18], line[1], line[2]]
+        else
+          table << [line[4], line[0][10..18], line[1], line[2]]
+          # table << :separator unless index == lines.size
+        end
         day = new_day
         total += line[3]
       end

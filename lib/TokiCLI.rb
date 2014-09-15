@@ -118,6 +118,14 @@ module TokiCLI
       end
     end
 
+    desc "activity", "Shows recent log updates"
+    option :since, type: :string, desc: 'Request log starting on this date'
+    def activity
+      init()
+      options.since? ? @toki.activity(options.since) : @toki.activity()
+      @view.log_activity(@toki.response)
+    end
+
     desc "bundle BUNDLE_ID", "Show complete log for an app from its exact bundle id"
     option :json, aliases: '-J', type: :boolean, desc: 'Export the results as a JSON file'
     option :csv, aliases: '-C', type: :boolean, desc: 'Export the results as a CSV file'
@@ -147,10 +155,10 @@ module TokiCLI
       abort(Status.please_scan) if @toki.bundles.nil?
       candidates = @fileops.get_bundle_from_name(app_name)
       candidates.each.with_index(1) do |bundle_id, index|
-        puts "\nApp N°#{'%.2d' % index}: #{bundle_id}\n" if candidates.length > 1
+        say "\nApp N°#{'%.2d' % index}: #{bundle_id}" if candidates.length > 1
         bundle_log(bundle_id, options)
         if JSON.parse(@toki.response)['meta']['code'] != 200
-          puts Status.no_data
+          say Status.no_data
         else
           if options[:json] || options[:csv]
             export(@toki, options, bundle_id)
@@ -171,18 +179,18 @@ module TokiCLI
       options[:no_backup] ? init() : init(true)
       name = @toki.bundles[bundle_id]
       confirm_delete(bundle_id, name)
-      puts "\nDeleting entries...\n"
+      say "\nDeleting entries..."
       @toki.delete_bundle(bundle_id)
       exit_with_msg_if_invalid_response(Status.wtf)
-      puts "\nDone.\n\n"
+      say "\nDone.\n"
     end
 
     private
 
     def confirm_delete(bundle_id, name)
       name.nil? ? insert = '' : insert = " (#{name})"
-      xx = ask("\nAre you sure you want to remove all '#{bundle_id}'#{insert} entries from the database ?\n\nType 'yes' to confirm.\n\n>> ")
-      abort("\nCanceled.\n\n") if xx != 'yes'
+      xx = yes?("\nAre you sure you want to remove all '#{bundle_id}'#{insert} entries from the database ?\n\n>> ")
+      abort("\nCanceled.\n\n") if xx == false
     end
 
     def bundle_log(bundle_id, options)
@@ -195,7 +203,7 @@ module TokiCLI
       end
     end
 
-    def bundle_title(bundle_id, options)
+    def bundle_title(bundle_id, options = {})
       prefix = "Toki - Complete log for #{bundle_id}"
       if options[:since]
         "#{prefix} since #{options[:since]}"
