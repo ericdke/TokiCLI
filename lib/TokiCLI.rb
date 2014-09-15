@@ -185,6 +185,18 @@ module TokiCLI
       adn.restore
     end
 
+    desc "serve", "Start a local Toki API server"
+    map "server" => :serve
+    def serve
+      require_relative '../lib/TokiServer/tokiserver'
+      puts "\n\n"
+      say_status :starting, "Toki API server"
+      say "\n\nPress [CTRL-C] to stop.\n\nThe index page URL is: http://localhost:4567\n\n"
+      TokiServer.run!
+      puts "\n\n"
+      say_status :halt, "Toki API server"
+    end
+
     # ---
 
     desc "delete BUNDLE_ID", "Permanently delete this application from the database"

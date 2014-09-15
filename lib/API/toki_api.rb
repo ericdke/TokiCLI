@@ -13,8 +13,8 @@ module TokiCLI
     attr_reader :bundles, :response
 
     def initialize(db_path, bundles = nil)
-      @db = TokiDB.new(db_path)
-      @helpers = Helpers.new
+      @db = TokiCLI::TokiDB.new(db_path)
+      @helpers = TokiCLI::Helpers.new
       @bundles = bundles
     end
 

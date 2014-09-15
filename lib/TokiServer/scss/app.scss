@@ -1,0 +1,102 @@
+@import "settings";
+@import "foundation";
+
+$bg: #000;
+$red: #e74c3c;
+$blue: #3498db;
+$green: #1abc9c;
+$grey: #95a5a6;
+
+body {
+  background-color: $bg;
+  font-family: 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: normal;
+  font-style: normal;
+}
+
+.header {
+  margin-top: 1em;
+}
+
+.time {
+  text-align: center;
+}
+
+h1, h2 {
+  font-family: 'Roboto Slab', serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: normal;
+  font-style: normal;
+}
+
+h1.logo {
+  text-align: center;
+  color: $red;
+  padding: .1em 1em;
+  border-bottom: 1px solid $red;
+  margin-bottom: 1.5em;
+}
+
+h1.title {
+  text-align: center;
+  color: $blue;
+  padding: .1em 1em;
+  border-bottom: 1px solid $blue;
+}
+
+.name {
+  color: $blue;
+}
+
+h4.bundle {
+  color: $grey;
+  margin-bottom: 1em;
+}
+
+h4.seconds {
+  color: $red;
+  margin-top: 2em;
+}
+
+h5.list {
+  color: $blue;
+}
+
+h5.endpoint a {
+  color: $red;
+}
+
+.log {
+  text-align: center;
+}
+
+.start {
+  color: $blue;
+}
+
+.duration {
+  color: $red;
+}
+
+h3.back {
+  a {
+    color: $blue;
+    padding: .5em;
+    border-bottom: 1px solid $red;
+  }
+  text-align: center;
+  margin-top: 3em;
+}
+
+.hero {
+  h1, p {
+    color: #888;
+  }
+}
+
+img.icon {
+  margin-top: 3em;
+}
