@@ -35,6 +35,9 @@ class TokiServer < Sinatra::Application
 
   fileops = TokiCLI::FileOps.new
   toki = TokiCLI::TokiAPI.new(fileops.db_file, fileops.bundles)
+  # Each toki instance has @response, which always contains the last result from a command
+  # So you can go with state (updated toki.response) or stateless (create new TokiAPI instances)
+
   # itunesgrabber = ItunesIcon.new
 
   # INDEX
@@ -49,18 +52,24 @@ class TokiServer < Sinatra::Application
 
   get '/api/apps/total/?' do
     content_type :json
-    toki.apps_total
+    toki.apps_total()
   end
 
   get '/api/apps/top/?:number?' do
+    max = params[:number].to_i
     content_type :json
     if params[:number]
-      toki.apps_top(params[:number].to_i)
+      toki.apps_top(max)
     else
       toki.apps_top()
     end
   end
 
+  get '/api/apps/day/:day' do
+    day = params[:day]
+    content_type :json
+    toki.apps_day(day)
+  end
 
 
 
