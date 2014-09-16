@@ -89,6 +89,29 @@ class TokiServer < Sinatra::Application
     toki.apps_range(day1, day2)
   end
 
+  get '/api/apps/since/?:day?' do
+    day = params[:day]
+    content_type :json
+    toki.apps_since(day)
+  end
+
+  get '/api/apps/before/?:day?' do
+    day = params[:day]
+    content_type :json
+    toki.apps_before(day)
+  end
+
+  get '/api/activity/today/?' do
+    content_type :json
+    toki.log_since()
+  end
+
+  get '/api/activity/since/?:day?' do
+    day = params[:day]
+    content_type :json
+    toki.log_since(day)
+  end
+
 
 
   # METHODS
