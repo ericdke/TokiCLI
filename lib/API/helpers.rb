@@ -35,6 +35,12 @@ module TokiCLI
       "#{'%.2d' % obj['minutes']}m #{'%.2d' % obj['seconds']}s"
     end
 
+    def calc_apps_total(data)
+      total = 0
+      data.each { |obj| total += obj['total']['seconds'] }
+      return total
+    end
+
   end
 
 end

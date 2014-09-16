@@ -76,12 +76,45 @@ class TokiServer < Sinatra::Application
   end
 
   get '/apps/total/?' do
-    toki.apps_total()
-    data = JSON.parse(toki.response)['data']
-    total = 0
-    data.each { |obj| total += obj['total']['seconds'] }
-    erb :apps_total, locals: { toki: toki, title: 'TOTAL', data: data, total: total }
+    data = JSON.parse(toki.apps_total)['data']
+    total = toki.helpers.calc_apps_total(data)
+    erb :apps_total, locals: { toki: toki, title: 'Total', data: data, total: total }
   end
+
+  get '/apps/top/?:number?' do
+    data = if params[:number]
+      max = params[:number].to_i
+      JSON.parse(toki.apps_top(max))['data']
+    else
+      JSON.parse(toki.apps_top)['data']
+    end
+    erb :apps_total, locals: { toki: toki, title: 'Total', data: data, total: nil }
+  end
+
+  get '/apps/day/?:day?' do
+    day = params[:day]
+    data = JSON.parse(toki.apps_day(day))['data']
+    erb :apps_total, locals: { toki: toki, title: 'Total', data: data, total: nil }
+  end
+
+  get '/apps/range/:day1/?:day2?' do
+    day1, day2 = params[:day1], params[:day2]
+    data = JSON.parse(toki.apps_range(day1, day2))['data']
+    erb :apps_total, locals: { toki: toki, title: 'Total', data: data, total: nil }
+  end
+
+  get '/apps/since/?:day?' do
+    day = params[:day]
+    data = JSON.parse(toki.apps_since(day))['data']
+    erb :apps_total, locals: { toki: toki, title: 'Total', data: data, total: nil }
+  end
+
+  get '/apps/before/?:day?' do
+    day = params[:day]
+    data = JSON.parse(toki.apps_before(day))['data']
+    erb :apps_total, locals: { toki: toki, title: 'Total', data: data, total: nil }
+  end
+
 
 
   # API ROUTES

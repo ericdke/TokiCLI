@@ -11,7 +11,7 @@
 
 <div class="row">
   <div class="small-6 small-centered columns">
-    <h2 class="total"><%= toki.helpers.readable_time(toki.helpers.sec_to_time(total)) %></h3>
+    <h3 class="total"><%= toki.helpers.readable_time(toki.helpers.sec_to_time(total)) unless total.nil? %></h3>
   </div>
 </div>
 

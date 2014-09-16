@@ -183,8 +183,14 @@ module TokiCLI
       result = {}
       sorted = db_resp.sort_by { |arr| arr[2] }
       sorted.each do |arr|
+        name = if @bundles.nil?
+          arr[1]
+        else
+          @bundles[arr[1]]
+        end
         result[arr[0]] = {
           bundle: arr[1],
+          name: name,
           start: @helpers.epoch_to_date(arr[2]),
           duration: {
             seconds: arr[4],
