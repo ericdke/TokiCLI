@@ -71,9 +71,16 @@ class TokiServer < Sinatra::Application
 
   # WEB ROUTES
 
-  # INDEX
   get '/' do
     erb :index
+  end
+
+  get '/apps/total/?' do
+    toki.apps_total()
+    data = JSON.parse(toki.response)['data']
+    total = 0
+    data.each { |obj| total += obj['total']['seconds'] }
+    erb :apps_total, locals: { toki: toki, title: 'TOTAL', data: data, total: total }
   end
 
 
