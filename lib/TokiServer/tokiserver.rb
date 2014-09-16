@@ -184,4 +184,19 @@ class TokiServer < Sinatra::Application
     candidates.map {|bundle| toki.bundle_log_since(bundle, day)}
   end
 
+  get '/api/user/?' do
+    content_type :json
+    File.read(fileops.user_file)
+  end
+
+  get '/api/bundles/?' do
+    content_type :json
+    fileops.bundles.to_json
+  end
+
+  get '/api/names/?' do
+    content_type :json
+    fileops.bundles.to_json
+  end
+
 end
