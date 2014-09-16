@@ -10,8 +10,13 @@
 </div>
 
 <div class="row">
-  <div class="small-12 small-centered columns">
+  <div class="small-12 columns">
     <h3 class="total"><%= name %> <%= toki.helpers.readable_time(toki.helpers.sec_to_time(total)) unless total.nil? %></h3>
+    <% unless icon.nil? %>
+      <div class="small-1 small-centered columns">
+        <img src="<%= icon %>" alt="icon" class="icon">
+      </div>
+    <% end %>
     <br>
   </div>
 </div>

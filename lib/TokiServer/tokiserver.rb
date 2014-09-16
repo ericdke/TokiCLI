@@ -5,7 +5,7 @@ require "sinatra"
 require "sinatra/assetpack"
 require_relative '../API/toki_api'
 require_relative '../TokiCLI/fileops'
-# require_relative "itunesicon"
+require_relative "itunesicons"
 require "sinatra/reloader"
 
 class TokiServer < Sinatra::Application
@@ -65,8 +65,7 @@ class TokiServer < Sinatra::Application
   # Each toki instance has @response, which always contains the last result from a command
   # So you can go with state (updated toki.response) or stateless (create new TokiAPI instances)
   getters = Getters.new(toki, fileops)
-
-  # itunesgrabber = ItunesIcon.new
+  icons = ItunesIcons.new(fileops)
 
 
   # WEB ROUTES
@@ -137,7 +136,9 @@ class TokiServer < Sinatra::Application
   get '/logs/bundle/:bundle/total/?' do
     bundle = params[:bundle]
     data = JSON.parse(toki.bundle_log(bundle))['data']
-    erb :activity, locals: { toki: toki, title: 'Total', data: data, total: nil, name: "#{bundle} - #{toki.bundles[bundle]}" }
+    name = toki.bundles[bundle]
+    icon_url = icons.grab_small(name)
+    erb :activity, locals: { toki: toki, title: 'Total', data: data, total: nil, name: "#{bundle} - #{name}", icon: icon_url }
   end
 
   get '/logs/bundle/:bundle/day/?:day?' do
@@ -160,6 +161,8 @@ class TokiServer < Sinatra::Application
     total = toki.helpers.calc_logs_total(data)
     erb :activity, locals: { toki: toki, title: 'Total', data: data, total: total, name: "#{bundle} - #{toki.bundles[bundle]} -" }
   end
+
+  # still to do...
 
 
 
