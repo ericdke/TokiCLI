@@ -2,5 +2,6 @@ source 'https://rubygems.org'
 
 gem "sinatra", '>= 1.4.5'
 gem "sinatra-assetpack", '>= 0.3.2'
+gem "sinatra-contrib", '>= 1.4.2'
 gem 'TokiCLI', '>= 0.1.1'
 gem 'compass'

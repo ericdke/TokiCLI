@@ -6,11 +6,16 @@ require "sinatra/assetpack"
 require_relative '../API/toki_api'
 require_relative '../TokiCLI/fileops'
 # require_relative "itunesicon"
+require "sinatra/reloader"
 
 class TokiServer < Sinatra::Application
 
 
   # SINATRA INIT
+
+  configure :development do
+    register Sinatra::Reloader
+  end
 
   set :server, %w[thin webrick]
   set :port, 4567
