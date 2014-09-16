@@ -101,9 +101,22 @@ class TokiServer < Sinatra::Application
     toki.apps_before(day)
   end
 
+  get '/api/activity/?' do
+    activity_today(toki)
+  end
+
+  get '/api/activity/recent/?' do
+    activity_today(toki)
+  end
+
   get '/api/activity/today/?' do
+    activity_today(toki)
+  end
+
+  get '/api/activity/day/?:day?' do
+    day = params[:day]
     content_type :json
-    toki.log_since()
+    toki.log_day(day)
   end
 
   get '/api/activity/since/?:day?' do
@@ -112,9 +125,34 @@ class TokiServer < Sinatra::Application
     toki.log_since(day)
   end
 
+  get '/api/logs/bundle/:bundle/total/?' do
+    bundle = params[:bundle]
+    content_type :json
+    toki.bundle_log(bundle)
+  end
+
+  get '/api/logs/bundle/:bundle/day/?:day?' do
+    bundle, day = params[:bundle], params[:day]
+    content_type :json
+    toki.bundle_log_day(bundle, day)
+  end
+
+  get '/api/logs/bundle/:bundle/since/?:day?' do
+    bundle, day = params[:bundle], params[:day]
+    content_type :json
+    toki.bundle_log_since(bundle, day)
+  end
+
 
 
   # METHODS
+
+  ## API
+
+  def activity_today(toki)
+    content_type :json
+    toki.log_since()
+  end
 
 
 
