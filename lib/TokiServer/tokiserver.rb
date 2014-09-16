@@ -9,6 +9,9 @@ require_relative '../TokiCLI/fileops'
 
 class TokiServer < Sinatra::Application
 
+
+  # SINATRA INIT
+
   set :server, %w[thin webrick]
   set :port, 4567
   set :root, File.dirname(__FILE__)
@@ -33,6 +36,9 @@ class TokiServer < Sinatra::Application
     js_compression :jsmin
   end
 
+
+  # TOKI INIT
+
   fileops = TokiCLI::FileOps.new
   toki = TokiCLI::TokiAPI.new(fileops.db_file, fileops.bundles)
   # Each toki instance has @response, which always contains the last result from a command
@@ -40,12 +46,13 @@ class TokiServer < Sinatra::Application
 
   # itunesgrabber = ItunesIcon.new
 
+
+  # WEB ROUTES
+
   # INDEX
   get '/' do
     erb :index
   end
-
-  # WEB ROUTES
 
 
   # API ROUTES
@@ -65,17 +72,22 @@ class TokiServer < Sinatra::Application
     end
   end
 
-  get '/api/apps/day/:day' do
+  get '/api/apps/day/?:day?' do
     day = params[:day]
     content_type :json
     toki.apps_day(day)
   end
 
-  get '/api/apps/range/:day1/:day2' do
+  get '/api/apps/range/:day1/?:day2?' do
     day1, day2 = params[:day1], params[:day2]
     content_type :json
     toki.apps_range(day1, day2)
   end
+
+
+
+  # METHODS
+
 
 
 

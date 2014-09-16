@@ -122,7 +122,7 @@ module TokiCLI
         resp = [{'deleted' => bundle_id}]
         @response = make_basic_response(request, resp)
       else
-        @response = no_resp(request)
+        @response = bad_request(request)
       end
       return @response
     end
@@ -136,7 +136,7 @@ module TokiCLI
     end
 
     def invalid_response(request)
-      @response = no_resp(request)
+      @response = bad_request(request)
     end
 
     def make_apps_list(resp)
@@ -195,11 +195,12 @@ module TokiCLI
       return result
     end
 
-    def no_resp(request)
+    def bad_request(request)
       {
         meta: {
-          code: 422,
-          request: request
+          code: 403,
+          request: request,
+          message: 'Bad request.'
         },
         data: []
       }.to_json
