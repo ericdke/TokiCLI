@@ -200,9 +200,9 @@ module TokiCLI
     # ---
 
     desc "delete BUNDLE_ID", "Permanently delete this application from the database"
-    option :no_backup, aliases: '-X',type: :boolean, desc: 'Do not backup the database before processing'
+    option :'no-backup', aliases: '-X',type: :boolean, desc: 'Do not backup the database before processing'
     def delete(bundle_id)
-      options[:no_backup] ? init() : init(true)
+      options['no-backup'] ? init() : init(true)
       name = @toki.bundles[bundle_id]
       confirm_delete(bundle_id, name)
       say "\nDeleting entries..."

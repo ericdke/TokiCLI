@@ -13,6 +13,22 @@ Access your Toki data from the local database or from the App.net backup channel
 
 ## Usage
 
+*Note: `<element>` means that `element` is optional.*
+
+### Help
+
+`toki`
+
+shows the basic commands.
+
+`toki help <command>`
+
+shows help and available options for a specific command.
+
+Example:
+
+`toki help bundle`
+
 ### Total
 
 The **total** command shows the total usage time for all apps.
@@ -59,60 +75,65 @@ The **range** command shows your top used apps between two specific days.
 
 ### App
 
-Total tracked time for an app
+Complete log for an app
 
-`toki app iterm`
+`toki app airmail`
 
-You don't have to specify the exact name of the identifier: for example, typing 'iterm' will find 'com.googlecode.iterm2'.
+Several apps may contain the same name. In that case, they will all be processed.
 
-However, you can specify a bundle identifier if you need it.
+Example: `toki app apple`  
 
-`toki app --bundle 'com.googlecode.iterm2'`
+#### App before
 
-### App before
+Complete log for an app before a specific day
 
-Total tracked time for an app before a specific day
-
-`toki app_before iterm 2014-04-19`
-
-`toki app_before --bundle 'com.googlecode.iterm2' 2014-04-19`
+`toki app airmail --before 2014-04-19`
 
 
-### App since
+#### App since
 
-Total tracked time for an app since a specific day
+Complete log for an app since a specific day
 
-`toki app_since iterm 2014-04-19`
-
-`toki app_since --bundle 'com.googlecode.iterm2' 2014-04-19`
+`toki app airmail --since 2014-04-19`
 
 
-### App day
+#### App day
 
-Total tracked time for an app on a specific day
+Complete log for an app on a specific day
 
-`toki app_day iterm 2014-04-19`
-
-`toki app_day --bundle 'com.googlecode.iterm2' 2014-04-19`
-
-### App range
-
-Total tracked time for an app between two specific days
-
-`toki app_range iterm 2014-04-19 2014-04-23`
-
-`toki app_range --bundle 'com.googlecode.iterm2' 2014-04-19 2014-04-23`
+`toki app airmail --day 2014-04-19`
 
 
-### Log
+### Bundle
 
-The **log** command shows the entire log (history) for one app.
+Complete log for an app, given its exact bundle ID.
 
-`toki log iterm`
+Same features as for `app`, just give an app bundle instead of an app name.
 
-`toki log --bundle 'com.googlecode.iterm2'`
+This should always return only one app log.
 
-The results are sorted by ascending date and time.
+`toki bundle it.bloop.airmail`
+`toki bundle it.bloop.airmail --before 2014-04-19`
+`toki bundle it.bloop.airmail --since 2014-04-19`
+`toki bundle it.bloop.airmail --day 2014-04-19`
+
+### Activity
+
+Complete Toki activity log.
+
+`toki activity`
+
+#### Activity since
+
+Complete Toki activity log since a specific day.
+
+`toki activity --since 2014-04-19`
+
+#### Activity day
+
+Complete Toki activity log for a specific day.
+
+`toki activity --day 2014-04-19`
 
 ### Scan
 
@@ -120,47 +141,52 @@ Scan for apps name.
 
 Will crawl the Applications folder and try to resolve app names from bundle identifiers.
 
-Toki will display apps names in results if apps have been scanned.  
+*Toki can display apps names in results only if apps have been scanned.* 
+  
 
-### Auth
-
-In order to be able to access your ADN channel (optional), TokiCLI has to obtain a "token" (secret code) from App.net.
-
-Just do `toki auth` and follow the steps, this is fast and easy.  
-
-### Global option: JSON
+### Option: JSON
 
 Export the Toki results as a JSON file with the `--json` option:
 
 `toki total --json`
 
-`toki day --json 2014-04-18`
+`toki day 2014-04-18 --json `
 
 `toki top -n10 -J` 
 
-### Global option: CSV
+### Option: CSV
 
 Export the Toki results as a CSV file with the `--csv` option:
 
 `toki total --csv`
 
-`toki day --csv 2014-04-18`
+`toki day 2014-04-18 --csv`
 
 `toki top -n10 -C` 
+
+### Delete
+
+Completely delete all traces of an app in the database.
+
+With backup:
+
+`toki delete it.bloop.airmail`
+
+Without backup:
+
+`toki delete it.bloop.airmail --no-backup`
 
 ### Restore database from App.net
 
 Toki.app backs up your Toki tracked apps data 'in the cloud' via an App.net channel.
 
-TokiCLI should be able to download this data and *rebuild the Toki database* if you lost your local install or you're simply moving toki.app to a new machine.
-
-`toki auth`
+TokiCLI should be able to download this data and *rebuild the Toki database* if you lost your local install or if it has been compromised.
 
 `toki restore`  
 
 # API
 
-## Local server for the API
+## Server for the API
 
 `toki serve`  
 
@@ -170,14 +196,14 @@ Examples of API calls with curl:
 
 ```
 curl http://localhost:4567/api/apps/top/10
-curl http://localhost:4567/api/find/safari/log
-curl http://localhost:4567/api/find/safari/since/2014-05-27
-curl http://localhost:4567/api/bundle/com.apple.Safari/before/2014-05-27
 curl http://localhost:4567/api/apps/day/2014-05-27
 curl http://localhost:4567/api/apps/range/2014-05-27/2014-05-30
+curl http://localhost:4567/api/logs/app/safari/
+curl http://localhost:4567/api/logs/app/safari/since/2014-05-27
+curl http://localhost:4567/api/logs/bundle/com.apple.Safari/before/2014-05-27
 ```  
 
-Remove the "/api" part of the URL to access rendered views of the responses.  
+*Web: remove the "/api" part of the URL to access rendered views of the responses.*
 
 ## Library  
 
@@ -205,82 +231,7 @@ Create a TokiCLI API instance:
 
 `toki = TokiCLI::TokiAPI.new(fileops.db_file, fileops.bundles)`
 
-### Endpoints
-
-Get the total time for an app, in seconds, given its exact bundle identifier:
-
-`time = toki.bundle_total 'com.sublimetext.3'`
-
-With a (partial) name:
-
-`time = toki.name_total 'sublime'`
-
-Get the total time for an app, in seconds, given its exact bundle identifier, since a specific day:
-
-`time = toki.bundle_total_since 'com.sublimetext.3', '2014-05-15'`
-
-With a (partial) name:
-
-`time = toki.name_total_since 'sublime', '2014-05-15'`
-
-Get the total time for an app, in seconds, given its exact bundle identifier, before a specific day:
-
-`time = toki.bundle_total_before 'com.sublimetext.3', '2014-05-15'`
-
-With a (partial) name:
-
-`time = toki.name_total_before 'sublime', '2014-05-15'`
-
-Get the total time for an app, in seconds, given its exact bundle identifier, before and since a specific day:
-
-`time = toki.bundle_total_split 'com.sublimetext.3', '2014-05-15'`
-
-With a (partial) name:
-
-`time = toki.name_total_split 'sublime', '2014-05-15'`
-
-Get the total time for an app, in seconds, given its exact bundle identifier, between two specific days:
-
-`time = toki.bundle_total_range 'com.sublimetext.3', '2014-05-15', '2014-05-17'`
-
-With a (partial) name:
-
-`time = toki.name_total_range 'sublime', '2014-05-15', '2014-05-17'`
-
-Get the total time of all apps used between day 1 and day 2:
-
-`apps = toki.apps_range '2014-05-15', '2014-05-17'`
-
-Get the total time of all apps used on a specific day:
-
-`apps = toki.apps_day '2014-05-15'`
-
-Get the total time of all tracked apps:
-
-`apps = toki.apps_total`
-
-Get the top x tracked apps (5 by default):
-
-`apps = toki.apps_top 10`
-
-Get the complete log for an app:
-
-`log = toki.bundle_log 'com.sublimetext.3'`
-
-With a (partial) name:
-
-`log = toki.name_log 'sublime text'`
-
-
-## Tools
-
-Scan disk for installed apps and save the file:
-
-`fileops.save_bundles`
-
-The file will be automatically loaded in new FileOps instances:
-
-`app_names = fileops.bundles`
+*See `toki_api.rb` and `fileops.rb` for the list of available methods.*
 
 # Toki
 
@@ -295,10 +246,6 @@ It's a time tracker for your apps that sits in the menu bar.
 **Tracking is the job of Toki.app by @keita.**
 
 TokiCLI interacts only with the Toki.app database or the App.net backup channel.
-
-## Next
-
-Teasing: TokiCLI has only read-only commands... for now. ;)
 
 ## Thanks
 
