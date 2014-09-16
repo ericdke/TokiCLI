@@ -136,6 +136,7 @@ module TokiCLI
     desc "bundle BUNDLE_ID", "Show complete log for an app from its exact bundle id"
     option :json, aliases: '-J', type: :boolean, desc: 'Export the results as a JSON file'
     option :csv, aliases: '-C', type: :boolean, desc: 'Export the results as a CSV file'
+    option :before, type: :string, desc: 'Request log before this date'
     option :since, type: :string, desc: 'Request log starting on this date'
     option :day, type: :string, desc: 'Request log for a specific day'
     def bundle(bundle_id)
@@ -145,7 +146,7 @@ module TokiCLI
       exit_with_msg_if_invalid_response(Status.no_data)
       if options[:json] || options[:csv]
         export(@toki, options)
-      elsif options[:since] || options[:day]
+      elsif options[:since] || options[:before] || options[:day]
         @view.log(@toki.response, title)
       else
         @view.log_total(@toki.response, title)
@@ -155,6 +156,7 @@ module TokiCLI
     desc "app APP_NAME", "Show complete log for an app from (part of) its name"
     option :json, aliases: '-J', type: :boolean, desc: 'Export the results as a JSON file'
     option :csv, aliases: '-C', type: :boolean, desc: 'Export the results as a CSV file'
+    option :before, type: :string, desc: 'Request log before this date'
     option :since, type: :string, desc: 'Request log starting on this date'
     option :day, type: :string, desc: 'Request log for a specific day'
     def app(*app_name)
@@ -169,7 +171,7 @@ module TokiCLI
         else
           if options[:json] || options[:csv]
             export(@toki, options, bundle_id)
-          elsif options[:since] || options[:day]
+          elsif options[:since] || options[:before] || options[:day]
             @view.log(@toki.response, bundle_title(bundle_id, options))
           else
             @view.log_total(@toki.response, bundle_title(bundle_id, options))
@@ -222,6 +224,8 @@ module TokiCLI
     def bundle_log(bundle_id, options)
       if options[:since]
         @toki.bundle_log_since(bundle_id, options[:since])
+      elsif options[:before]
+        @toki.bundle_log_before(bundle_id, options[:before])
       elsif options[:day]
         @toki.bundle_log_day(bundle_id, options[:day])
       else
@@ -233,6 +237,8 @@ module TokiCLI
       prefix = "Toki - Complete log for #{bundle_id}"
       if options[:since]
         "#{prefix} since #{options[:since]}"
+      elsif options[:before]
+        "#{prefix} before #{options[:before]}"
       elsif options[:day]
         "#{prefix} for #{options[:day]}"
       else

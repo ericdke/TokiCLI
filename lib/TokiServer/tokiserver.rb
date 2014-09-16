@@ -115,6 +115,52 @@ class TokiServer < Sinatra::Application
     erb :apps_total, locals: { toki: toki, title: 'Total', data: data, total: nil }
   end
 
+  get '/activity/?' do
+    data = JSON.parse(toki.log_since)['data']
+    erb :activity, locals: { toki: toki, title: 'Activity', data: data, total: nil, name: 'Recent activity' }
+  end
+
+  get '/activity/day/?:day?' do
+    day = params[:day]
+    data = JSON.parse(toki.log_day(day))['data']
+    total = toki.helpers.calc_logs_total(data)
+    erb :activity, locals: { toki: toki, title: 'Activity', data: data, total: total, name: "For #{day}:" }
+  end
+
+  get '/activity/since/?:day?' do
+    day = params[:day]
+    data = JSON.parse(toki.log_since(day))['data']
+    total = toki.helpers.calc_logs_total(data)
+    erb :activity, locals: { toki: toki, title: 'Activity', data: data, total: total, name: "Since #{day}:" }
+  end
+
+  get '/logs/bundle/:bundle/total/?' do
+    bundle = params[:bundle]
+    data = JSON.parse(toki.bundle_log(bundle))['data']
+    erb :activity, locals: { toki: toki, title: 'Total', data: data, total: nil, name: "#{bundle} - #{toki.bundles[bundle]}" }
+  end
+
+  get '/logs/bundle/:bundle/day/?:day?' do
+    bundle, day = params[:bundle], params[:day]
+    data = JSON.parse(toki.bundle_log_day(bundle, day))['data']
+    total = toki.helpers.calc_logs_total(data)
+    erb :activity, locals: { toki: toki, title: 'Total', data: data, total: total, name: "#{bundle} - #{toki.bundles[bundle]} -" }
+  end
+
+  get '/logs/bundle/:bundle/since/?:day?' do
+    bundle, day = params[:bundle], params[:day]
+    data = JSON.parse(toki.bundle_log_since(bundle, day))['data']
+    total = toki.helpers.calc_logs_total(data)
+    erb :activity, locals: { toki: toki, title: 'Total', data: data, total: total, name: "#{bundle} - #{toki.bundles[bundle]} -" }
+  end
+
+  get '/logs/bundle/:bundle/before/?:day?' do
+    bundle, day = params[:bundle], params[:day]
+    data = JSON.parse(toki.bundle_log_before(bundle, day))['data']
+    total = toki.helpers.calc_logs_total(data)
+    erb :activity, locals: { toki: toki, title: 'Total', data: data, total: total, name: "#{bundle} - #{toki.bundles[bundle]} -" }
+  end
+
 
 
   # API ROUTES
@@ -201,6 +247,12 @@ class TokiServer < Sinatra::Application
     bundle, day = params[:bundle], params[:day]
     content_type :json
     toki.bundle_log_since(bundle, day)
+  end
+
+  get '/api/logs/bundle/:bundle/before/?:day?' do
+    bundle, day = params[:bundle], params[:day]
+    content_type :json
+    toki.bundle_log_before(bundle, day)
   end
 
   get '/api/logs/app/:app/total/?' do

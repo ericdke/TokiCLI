@@ -79,6 +79,14 @@ module TokiCLI
       return response_wrapper(request, resp) { make_log_objects(resp) }
     end
 
+    def bundle_log_before(bundle, date)
+      request = {command: 'bundle_log_before', type: 'log', args: [bundle, date], processed_at: Time.now}
+      ending = @helpers.check_date_validity(date)
+      return invalid_response(request) if ending == false
+      resp = @db.bundle_log_before(bundle, ending.to_time.to_i)
+      return response_wrapper(request, resp) { make_log_objects(resp) }
+    end
+
     def bundle_log_range(bundle, day1, day2)
       request = {command: 'bundle_log_range', type: 'log', args: [bundle, day1, day2], processed_at: Time.now}
       starting, ending = @helpers.check_date_validity(day1), @helpers.check_date_validity(day2)

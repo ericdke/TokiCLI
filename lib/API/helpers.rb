@@ -41,6 +41,12 @@ module TokiCLI
       return total
     end
 
+    def calc_logs_total(data)
+      total = 0
+      data.each { |k, v| total += v['duration']['seconds'] }
+      return total
+    end
+
   end
 
 end

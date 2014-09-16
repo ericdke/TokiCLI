@@ -1,0 +1,34 @@
+<div class="row">
+  <div class="header">
+    <div class="small-6 columns">
+      <h1 class="logo">TOKI</h1>
+    </div>
+    <div class="small-6 columns">
+      <h1 class="title"><%= title %></h1>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="small-12 small-centered columns">
+    <h3 class="total"><%= name %> <%= toki.helpers.readable_time(toki.helpers.sec_to_time(total)) unless total.nil? %></h3>
+    <br>
+  </div>
+</div>
+
+<% data.each do |id, log| %>
+  <div class="row">
+    <div class="small-4 columns">
+      <h4 class="start"> <%= log['start'] %> </h4>
+    </div>
+    <div class="small-4 columns time">
+      <h4 class="duration"> <%= toki.helpers.readable_time_log(toki.helpers.sec_to_time(log['duration']['seconds'])) %> </h4>
+    </div>
+  </div>
+<% end %>
+
+<div class="row">
+  <div class="small-4 small-centered columns">
+    <h3 class="back"><a href="/">BACK TO INDEX</a></h3>
+  </div>
+</div>
