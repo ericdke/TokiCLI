@@ -42,12 +42,29 @@ class TokiServer < Sinatra::Application
   end
 
 
+  # METHODS
+
+  class Getters
+
+    def initialize(toki, fileops)
+      @toki = toki
+      @fileops = fileops
+    end
+
+    def bundles_from_name(bundles)
+      @fileops.get_bundle_from_name(Array(bundles))
+    end
+
+  end
+
+
   # TOKI INIT
 
   fileops = TokiCLI::FileOps.new
   toki = TokiCLI::TokiAPI.new(fileops.db_file, fileops.bundles)
   # Each toki instance has @response, which always contains the last result from a command
   # So you can go with state (updated toki.response) or stateless (create new TokiAPI instances)
+  getters = Getters.new(toki, fileops)
 
   # itunesgrabber = ItunesIcon.new
 
@@ -102,15 +119,18 @@ class TokiServer < Sinatra::Application
   end
 
   get '/api/activity/?' do
-    activity_today(toki)
+    content_type :json
+    toki.log_since()
   end
 
   get '/api/activity/recent/?' do
-    activity_today(toki)
+    content_type :json
+    toki.log_since()
   end
 
   get '/api/activity/today/?' do
-    activity_today(toki)
+    content_type :json
+    toki.log_since()
   end
 
   get '/api/activity/day/?:day?' do
@@ -143,18 +163,25 @@ class TokiServer < Sinatra::Application
     toki.bundle_log_since(bundle, day)
   end
 
-
-
-  # METHODS
-
-  ## API
-
-  def activity_today(toki)
+  get '/api/logs/app/:app/total/?' do
+    app = params[:app]
     content_type :json
-    toki.log_since()
+    candidates = getters.bundles_from_name(app)
+    candidates.map {|bundle| toki.bundle_log(bundle)}
   end
 
+  get '/api/logs/app/:app/day/?:day?' do
+    app, day = params[:app], params[:day]
+    content_type :json
+    candidates = getters.bundles_from_name(app)
+    candidates.map {|bundle| toki.bundle_log_day(bundle, day)}
+  end
 
-
+  get '/api/logs/app/:app/since/?:day?' do
+    app, day = params[:app], params[:day]
+    content_type :json
+    candidates = getters.bundles_from_name(app)
+    candidates.map {|bundle| toki.bundle_log_since(bundle, day)}
+  end
 
 end
