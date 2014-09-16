@@ -71,6 +71,12 @@ class TokiServer < Sinatra::Application
     toki.apps_day(day)
   end
 
+  get '/api/apps/range/:day1/:day2' do
+    day1, day2 = params[:day1], params[:day2]
+    content_type :json
+    toki.apps_range(day1, day2)
+  end
+
 
 
 end
