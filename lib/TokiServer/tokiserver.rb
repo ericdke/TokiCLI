@@ -121,21 +121,21 @@ class TokiServer < Sinatra::Application
 
   get '/activity/?' do
     data = JSON.parse(toki.log_since)['data']
-    erb :activity, locals: { toki: toki, title: 'Activity', data: data, total: nil, name: 'Recent activity' }
+    erb :activity, locals: { toki: toki, title: 'Activity', data: data, total: nil, name: 'Recent activity', icon: nil }
   end
 
   get '/activity/day/?:day?' do
     day = params[:day]
     data = JSON.parse(toki.log_day(day))['data']
     total = toki.helpers.calc_logs_total(data)
-    erb :activity, locals: { toki: toki, title: 'Activity', data: data, total: total, name: "For #{day}:" }
+    erb :activity, locals: { toki: toki, title: 'Activity', data: data, total: total, name: "For #{day}:", icon: nil }
   end
 
   get '/activity/since/?:day?' do
     day = params[:day]
     data = JSON.parse(toki.log_since(day))['data']
     total = toki.helpers.calc_logs_total(data)
-    erb :activity, locals: { toki: toki, title: 'Activity', data: data, total: total, name: "Since #{day}:" }
+    erb :activity, locals: { toki: toki, title: 'Activity', data: data, total: total, name: "Since #{day}:", icon: nil }
   end
 
   get '/logs/bundle/:bundle/total/?' do
