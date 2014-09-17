@@ -24,7 +24,7 @@ class TokiServer < Sinatra::Application
   assets do
     serve '/js', :from => 'js'
     serve '/bower_components', :from => 'bower_components'
-    serve '/css', :from => 'public/stylesheets/css'
+    serve '/css', :from => 'public/stylesheets'
 
     css :application, '/stylesheets/app.css', [
       '/stylesheets/app.css'
