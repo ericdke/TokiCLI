@@ -10,11 +10,39 @@ require "sinatra/reloader"
 
 class TokiServer < Sinatra::Application
 
+  class Getters
+
+    def initialize(toki, fileops)
+      @toki = toki
+      @fileops = fileops
+    end
+
+    def bundles_from_name(bundles)
+      @fileops.get_bundle_from_name(Array(bundles))
+    end
+
+  end
+
+  # TOKI INIT
+
+  fileops = TokiCLI::FileOps.new
+  toki = TokiCLI::TokiAPI.new(fileops.db_file, fileops.bundles)
+  # Each toki instance has @response, which always contains the last result from a command
+  # So you can go with state (updated toki.response) or stateless (create new TokiAPI instances)
+  getters = Getters.new(toki, fileops)
+  icons = ItunesIcons.new(fileops)
+
 
   # SINATRA INIT
 
   configure :development do
     register Sinatra::Reloader
+  end
+
+  configure do
+    file = File.new("#{fileops.log_path}/server.log", 'a+')
+    file.sync = true
+    use Rack::CommonLogger, file
   end
 
   set :server, %w[thin webrick]
@@ -45,32 +73,6 @@ class TokiServer < Sinatra::Application
 
     js_compression :jsmin
   end
-
-
-  # METHODS
-
-  class Getters
-
-    def initialize(toki, fileops)
-      @toki = toki
-      @fileops = fileops
-    end
-
-    def bundles_from_name(bundles)
-      @fileops.get_bundle_from_name(Array(bundles))
-    end
-
-  end
-
-
-  # TOKI INIT
-
-  fileops = TokiCLI::FileOps.new
-  toki = TokiCLI::TokiAPI.new(fileops.db_file, fileops.bundles)
-  # Each toki instance has @response, which always contains the last result from a command
-  # So you can go with state (updated toki.response) or stateless (create new TokiAPI instances)
-  getters = Getters.new(toki, fileops)
-  icons = ItunesIcons.new(fileops)
 
 
   # WEB ROUTES
