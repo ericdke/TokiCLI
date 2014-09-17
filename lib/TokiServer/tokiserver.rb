@@ -20,11 +20,15 @@ class TokiServer < Sinatra::Application
   set :server, %w[thin webrick]
   set :port, 4567
   set :root, File.dirname(__FILE__)
-  set :public_dir, File.dirname(__FILE__) + '/public'
 
   assets do
     serve '/js', :from => 'js'
     serve '/bower_components', :from => 'bower_components'
+    serve '/css', :from => 'public/stylesheets/css'
+
+    css :application, '/stylesheets/app.css', [
+      '/stylesheets/app.css'
+    ]
 
     js :modernizr, [
       '/bower_components/modernizr/modernizr.js',
