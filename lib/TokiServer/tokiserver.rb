@@ -128,14 +128,14 @@ class TokiServer < Sinatra::Application
     day = params[:day]
     data = JSON.parse(toki.log_day(day))['data']
     total = toki.helpers.calc_logs_total(data)
-    erb :activity, locals: { toki: toki, title: 'Activity', data: data, total: total, name: "For #{day}:", icon: nil }
+    erb :activity, locals: { toki: toki, title: 'Activity', data: data, total: total, name: "#{day} -", icon: nil }
   end
 
   get '/activity/since/?:day?' do
     day = params[:day]
     data = JSON.parse(toki.log_since(day))['data']
     total = toki.helpers.calc_logs_total(data)
-    erb :activity, locals: { toki: toki, title: 'Activity', data: data, total: total, name: "Since #{day}:", icon: nil }
+    erb :activity, locals: { toki: toki, title: 'Activity', data: data, total: total, name: "Since #{day} -", icon: nil }
   end
 
   get '/logs/bundle/:bundle/total/?' do
@@ -188,6 +188,19 @@ class TokiServer < Sinatra::Application
 
 
   # API ROUTES
+
+  get '/api/?' do
+    content_type :json
+    {
+      'meta' => {
+        'code' => 200,
+        'message' => 'Welcome to the Toki API server.'
+      },
+      'data' => {
+        'routes' => %w{/api/apps/total /api/apps/top/[number] api/apps/day/(iso8601_date) /api/apps/range/(iso8601_date)/(iso8601_date) /api/apps/since/(iso8601_date) /api/apps/before/(iso8601_date) /api/activity /api/activity/day/(iso8601_date) /api/activity/since/(iso8601_date) /api/logs/bundle/(bundle_id)/total /api/logs/bundle/(bundle_id)/day/(iso8601_date) /api/logs/bundle/(bundle_id)/since/(iso8601_date) /api/logs/bundle/(bundle_id)/before/(iso8601_date) /api/logs/bundle/(bundle_id)/range/(iso8601_date)/(iso8601_date) /api/logs/app/(app_name)/total /api/logs/app/(app_name)/day/(iso8601_date) /api/logs/app/(app_name)/since/(iso8601_date) /api/user /api/bundles}
+      }
+    }.to_json
+  end
 
   get '/api/apps/total/?' do
     content_type :json
@@ -319,6 +332,25 @@ class TokiServer < Sinatra::Application
   get '/api/names/?' do
     content_type :json
     fileops.bundles.to_json
+  end
+
+  # ---
+
+  not_found do
+    message = request.env['sinatra.error'].to_s.split('::')[1]
+    if request.path_info =~ /\/api/
+      content_type :json
+      {
+        'meta' => {
+          'code' => 404,
+          'message' => message,
+          'processed_at' => Time.now
+        },
+        'data' => request.env
+      }.to_json
+    else
+      erb :error, locals: { title: '404', data: request.env, error: message }
+    end
   end
 
 end

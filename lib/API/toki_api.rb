@@ -135,16 +135,18 @@ module TokiCLI
       return @response
     end
 
+    # ---
+
+    def invalid_response(request)
+      @response = bad_request(request)
+    end
+
     private
 
     def response_wrapper(request, resp)
       return invalid_response(request) if resp.empty?
       list = yield
       @response = make_basic_response(request, list)
-    end
-
-    def invalid_response(request)
-      @response = bad_request(request)
     end
 
     def make_apps_list(resp)
