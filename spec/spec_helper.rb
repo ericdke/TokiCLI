@@ -3,7 +3,9 @@ $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 require 'coveralls'
 Coveralls.wear!
 
-require 'TokiCLI'
+# require 'TokiCLI'
+require_relative '../lib/TokiCLI'
+require_relative '../lib/API/toki_api'
 
 require 'stringio'
 def capture_stdout(&blk)
