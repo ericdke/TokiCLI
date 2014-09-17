@@ -13,19 +13,19 @@ class ItunesIcons
     @fileops = fileops
   end
 
-  def grab_small *args
+  def grab_small(*args)
     @entity = "macSoftware"
     @icon_size = "artworkUrl60"
-    grab args
+    grab(args)
   end
 
-  def grab_big *args
+  def grab_big(*args)
     @entity = "macSoftware"
     @icon_size = "artworkUrl100"
-    grab args
+    grab(args)
   end
 
-  def grab *args
+  def grab(*args)
     terms = args.join(" ")
     icon_url = find_icon(terms)
     if icon_url
@@ -50,7 +50,7 @@ class ItunesIcons
     begin
       open(url) do |f|
         File.open(path,'w+') do |file|
-          file.puts f.read
+          file.puts(f.read)
         end
       end
       true
