@@ -26,10 +26,10 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'sinatra', '~> 1.4', '>= 1.4.5'
   spec.add_dependency "thin", "~> 1.6"
   spec.add_dependency 'sinatra-assetpack', "~> 0.3", '>= 0.3.2'
-  spec.add_dependency "sinatra-contrib", '>= 1.4.2'
+  spec.add_dependency "sinatra-contrib", '~> 1.4', '>= 1.4.2'
 
   spec.add_development_dependency "bundler", "~> 1.7"
   spec.add_development_dependency "rake", "~> 10.0"
-  spec.add_development_dependency "rspec"
+  spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "coveralls"
 end

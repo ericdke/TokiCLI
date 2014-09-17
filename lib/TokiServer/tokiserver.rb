@@ -20,6 +20,7 @@ class TokiServer < Sinatra::Application
   set :server, %w[thin webrick]
   set :port, 4567
   set :root, File.dirname(__FILE__)
+  set :public, File.dirname(__FILE__) + '/public'
 
   assets do
     serve '/js', :from => 'js'
