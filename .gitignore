@@ -13,7 +13,7 @@ tmp/
 mkmf.log
 token
 .tags
-lib/TokiServer/.sass-cache
+.sass-cache/
 lib/TokiServer/public/
 .sublime*
 *.gem
