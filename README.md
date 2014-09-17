@@ -4,7 +4,7 @@ Toki.app command-line client and API server.
 
 Access your Toki data from the local database or from the App.net backup channel, via the CLI interface or the served API.
 
-![TokiCLI](https://www.evernote.com/shard/s89/sh/dd392b00-82b6-4f13-b573-c925a99ae5a0/02aa5ea4266e8bc7e28d7c91ba8b922c/deep/0/toki-server.png)  
+![TokiServer example](https://www.evernote.com/shard/s89/sh/dd392b00-82b6-4f13-b573-c925a99ae5a0/02aa5ea4266e8bc7e28d7c91ba8b922c/deep/0/toki-server.png)  
 
 
 ## Installation
@@ -12,8 +12,6 @@ Access your Toki data from the local database or from the App.net backup channel
 `gem install TokiCLI`
 
 ## Usage
-
-*Note: `<element>` means that `element` is optional.*
 
 ### Help
 
@@ -119,7 +117,7 @@ This should always return only one app log.
 
 ### Activity
 
-Complete Toki activity log.
+Recent Toki activity log.
 
 `toki activity`
 

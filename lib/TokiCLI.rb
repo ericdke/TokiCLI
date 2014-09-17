@@ -139,6 +139,7 @@ module TokiCLI
     option :before, type: :string, desc: 'Request log before this date'
     option :since, type: :string, desc: 'Request log starting on this date'
     option :day, type: :string, desc: 'Request log for a specific day'
+    option :range, type: :array, desc: 'Request log between two specific days'
     def bundle(bundle_id)
       init()
       title = bundle_title(bundle_id, options)
@@ -146,7 +147,7 @@ module TokiCLI
       exit_with_msg_if_invalid_response(Status.no_data)
       if options[:json] || options[:csv]
         export(@toki, options)
-      elsif options[:since] || options[:before] || options[:day]
+      elsif options[:since] || options[:before] || options[:day] || options[:range]
         @view.log(@toki.response, title)
       else
         @view.log_total(@toki.response, title)
@@ -159,6 +160,7 @@ module TokiCLI
     option :before, type: :string, desc: 'Request log before this date'
     option :since, type: :string, desc: 'Request log starting on this date'
     option :day, type: :string, desc: 'Request log for a specific day'
+    option :range, type: :array, desc: 'Request log between two specific days'
     def app(*app_name)
       init()
       abort(Status.please_scan) if @toki.bundles.nil?
@@ -171,7 +173,7 @@ module TokiCLI
         else
           if options[:json] || options[:csv]
             export(@toki, options, bundle_id)
-          elsif options[:since] || options[:before] || options[:day]
+          elsif options[:since] || options[:before] || options[:day] || options[:range]
             @view.log(@toki.response, bundle_title(bundle_id, options))
           else
             @view.log_total(@toki.response, bundle_title(bundle_id, options))
@@ -228,6 +230,8 @@ module TokiCLI
         @toki.bundle_log_before(bundle_id, options[:before])
       elsif options[:day]
         @toki.bundle_log_day(bundle_id, options[:day])
+      elsif options[:range]
+        @toki.bundle_log_range(bundle_id, options[:range][0], options[:range][1])
       else
         @toki.bundle_log(bundle_id)
       end
@@ -240,7 +244,9 @@ module TokiCLI
       elsif options[:before]
         "#{prefix} before #{options[:before]}"
       elsif options[:day]
-        "#{prefix} for #{options[:day]}"
+        "#{prefix} - #{options[:day]}"
+      elsif options[:range]
+        "#{prefix} - #{options[:range][0]}/#{options[:range][1]}"
       else
         prefix
       end
