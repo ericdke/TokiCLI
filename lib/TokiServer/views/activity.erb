@@ -23,10 +23,13 @@
 
 <% data.each do |id, log| %>
   <div class="row">
+    <div class="small-4 columns">
+      <h4 class="bundle"> <%= log['name'] || log['bundle'] %> </h4>
+    </div>
     <div class="small-6 columns">
       <h4 class="start"> <%= log['start'] %> </h4>
     </div>
-    <div class="small-6 columns time">
+    <div class="small-2 columns time">
       <h4 class="duration"> <%= toki.helpers.readable_time_log(toki.helpers.sec_to_time(log['duration']['seconds'])) %> </h4>
     </div>
   </div>
