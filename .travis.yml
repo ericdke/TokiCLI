@@ -16,3 +16,6 @@ branches:
 notifications:
   email:
     - ericdejonckheere@gmail.com
+
+before_install:
+  - gem install CFPropertyList -v '2.2.8'
