@@ -92,7 +92,7 @@ describe TokiCLI do
       printed = capture_stdout do
         TokiCLI::App.start(['activity', '--day', '2014-09-14'])
       end
-      expect(printed).to include *['com.apple.finder              |  02:00:00     | 00m 04s      | 3009986780794979448', 'com.apple.Safari              |  17:00:00     | 02m 02s      | 279578532860092796', 'com.apple.finder              |  23:30:00     | 01m 37s      | 5321635596015812810']
+      expect(printed).to include *['3009986780794979448', '279578532860092796', '5321635596015812810']
     end
   end
 
@@ -101,7 +101,7 @@ describe TokiCLI do
       printed = capture_stdout do
         TokiCLI::App.start(['activity', '--since', '2014-09-14'])
       end
-      expect(printed).to include *['com.apple.finder              |  02:00:00     | 00m 04s      | 3009986780794979448', 'com.apple.Safari              |  17:00:00     | 02m 02s      | 279578532860092796', 'com.apple.finder              |  23:30:00     | 01m 37s      | 5321635596015812810', 'com.apple.finder              |  08:15:00     | 00m 29s      | 2450616761580369798', 'com.apple.Safari              |  15:00:00     | 00m 06s      | 7557789946794681026']
+      expect(printed).to include *['3009986780794979448', '279578532860092796', '5321635596015812810', '2450616761580369798', '7557789946794681026']
     end
   end
 
@@ -110,7 +110,7 @@ describe TokiCLI do
       printed = capture_stdout do
         TokiCLI::App.start(['bundle', 'com.apple.iTunes'])
       end
-      expect(printed).to include *['2014-04-13', '16:45:00               | 01m 02s                | 93837223385103975', '2014-04-14', '09:15:00               | 00m 18s                | 9048025340952260608', '12:30:00               | 00m 27s                | 8045504996000693405', 'Total: 3h 52m 32s']
+      expect(printed).to include *['93837223385103975', '9048025340952260608', '8045504996000693405']
     end
   end
 
