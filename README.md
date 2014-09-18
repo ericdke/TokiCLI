@@ -116,11 +116,13 @@ Same features as for `app`, just give an app bundle instead of an app name.
 
 This should always return only one app log.
 
-`toki bundle it.bloop.airmail`
-`toki bundle it.bloop.airmail --before 2014-04-19`
-`toki bundle it.bloop.airmail --since 2014-04-19`
-`toki bundle it.bloop.airmail --day 2014-04-19`
-`toki bundle it.bloop.airmail --range 2014-04-19 2014-05-12`
+```
+toki bundle it.bloop.airmail
+toki bundle it.bloop.airmail --before 2014-04-19
+toki bundle it.bloop.airmail --since 2014-04-19
+toki bundle it.bloop.airmail --day 2014-04-19
+toki bundle it.bloop.airmail --range 2014-04-19 2014-05-12
+```  
 
 ### Activity
 
