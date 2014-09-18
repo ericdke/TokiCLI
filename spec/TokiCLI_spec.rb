@@ -265,8 +265,8 @@ describe TokiCLI::TokiAPI do
       expect(resp['meta']['code']).to eq 200
       expect(resp['meta']['request']['command']).to eq 'bundle_log'
       expect(resp['data'].size).to eq 1397
-      expect(resp['data']['6853206097451538432'].to_a).to eq [["bundle", "com.apple.finder"], ["name", nil], ["start", "2014-04-12 13:15:00 +0000"], ["duration", {"seconds"=>10, "time"=>{"hours"=>0, "minutes"=>0, "seconds"=>10}}]]
-      expect(resp['data']['8223841650221385607'].to_a).to eq [["bundle", "com.apple.finder"], ["name", nil], ["start", "2014-09-15 10:45:00 +0200"], ["duration", {"seconds"=>70, "time"=>{"hours"=>0, "minutes"=>1, "seconds"=>10}}]]
+      expect(resp['data']['6853206097451538432'].to_a).to include *[["bundle", "com.apple.finder"], ["name", nil], ["duration", {"seconds"=>10, "time"=>{"hours"=>0, "minutes"=>0, "seconds"=>10}}]]
+      expect(resp['data']['8223841650221385607'].to_a).to include *[["bundle", "com.apple.finder"], ["name", nil], ["duration", {"seconds"=>70, "time"=>{"hours"=>0, "minutes"=>1, "seconds"=>10}}]]
     end
   end
 
@@ -277,8 +277,8 @@ describe TokiCLI::TokiAPI do
       expect(resp['meta']['code']).to eq 200
       expect(resp['meta']['request']['command']).to eq 'bundle_log_since'
       expect(resp['data'].size).to eq 131
-      expect(resp['data']['3343489613556420396'].to_a).to eq [["bundle", "com.apple.finder"], ["name", nil], ["start", "2014-09-01 08:45:00 +0200"], ["duration", {"seconds"=>15, "time"=>{"hours"=>0, "minutes"=>0, "seconds"=>15}}]]
-      expect(resp['data']['8223841650221385607'].to_a).to eq [["bundle", "com.apple.finder"], ["name", nil], ["start", "2014-09-15 10:45:00 +0200"], ["duration", {"seconds"=>70, "time"=>{"hours"=>0, "minutes"=>1, "seconds"=>10}}]]
+      expect(resp['data']['3343489613556420396'].to_a).to include *[["bundle", "com.apple.finder"], ["name", nil], ["duration", {"seconds"=>15, "time"=>{"hours"=>0, "minutes"=>0, "seconds"=>15}}]]
+      expect(resp['data']['8223841650221385607'].to_a).to include *[["bundle", "com.apple.finder"], ["name", nil], ["duration", {"seconds"=>70, "time"=>{"hours"=>0, "minutes"=>1, "seconds"=>10}}]]
     end
   end
 
@@ -290,8 +290,8 @@ describe TokiCLI::TokiAPI do
       expect(resp['meta']['request']['command']).to eq 'bundle_log_before'
       expect(resp['data'].size).to eq 1266
       arr = resp['data'].to_a
-      expect(arr.first).to eq ["6853206097451538432", {"bundle"=>"com.apple.finder", "name"=>nil, "start"=>"2014-04-12 15:15:00 +0200", "duration"=>{"seconds"=>10, "time"=>{"hours"=>0, "minutes"=>0, "seconds"=>10}}}]
-      expect(arr.last).to eq ["3110227595022506229", {"bundle"=>"com.apple.finder", "name"=>nil, "start"=>"2014-08-31 23:00:00 +0200", "duration"=>{"seconds"=>30, "time"=>{"hours"=>0, "minutes"=>0, "seconds"=>30}}}]
+      expect(arr.first).to include "6853206097451538432"
+      expect(arr.last).to include "3110227595022506229"
     end
   end
 
@@ -303,8 +303,8 @@ describe TokiCLI::TokiAPI do
       expect(resp['meta']['request']['command']).to eq 'bundle_log_range'
       expect(resp['data'].size).to eq 26
       arr = resp['data'].to_a
-      expect(arr.first).to eq ["3343489613556420396", {"bundle"=>"com.apple.finder", "name"=>nil, "start"=>"2014-09-01 08:45:00 +0200", "duration"=>{"seconds"=>15, "time"=>{"hours"=>0, "minutes"=>0, "seconds"=>15}}}]
-      expect(arr.last).to eq ["249678006045203865", {"bundle"=>"com.apple.finder", "name"=>nil, "start"=>"2014-09-03 21:30:00 +0200", "duration"=>{"seconds"=>16, "time"=>{"hours"=>0, "minutes"=>0, "seconds"=>16}}}]
+      expect(arr.first).to include "3343489613556420396"
+      expect(arr.last).to include "249678006045203865"
     end
   end
 
@@ -317,8 +317,8 @@ describe TokiCLI::TokiAPI do
       expect(resp['meta']['request']['args']).to eq ["com.apple.finder", "2014-09-01", "2014-09-02"]
       expect(resp['data'].size).to eq 13
       arr = resp['data'].to_a
-      expect(arr.first).to eq ["3343489613556420396", {"bundle"=>"com.apple.finder", "name"=>nil, "start"=>"2014-09-01 08:45:00 +0200", "duration"=>{"seconds"=>15, "time"=>{"hours"=>0, "minutes"=>0, "seconds"=>15}}}]
-      expect(arr.last).to eq ["8777542996540152763", {"bundle"=>"com.apple.finder", "name"=>nil, "start"=>"2014-09-01 21:45:00 +0200", "duration"=>{"seconds"=>61, "time"=>{"hours"=>0, "minutes"=>1, "seconds"=>1}}}]
+      expect(arr.first).to include "3343489613556420396"
+      expect(arr.last).to include "8777542996540152763"
     end
   end
 
@@ -331,8 +331,8 @@ describe TokiCLI::TokiAPI do
       expect(resp['meta']['request']['args']).to eq ["2014-09-13"]
       expect(resp['data'].size).to eq 87
       arr = resp['data'].to_a
-      expect(arr.first).to eq ["1226267152535471391", {"bundle"=>"com.apple.appstore", "name"=>nil, "start"=>"2014-09-13 10:15:00 +0200", "duration"=>{"seconds"=>3, "time"=>{"hours"=>0, "minutes"=>0, "seconds"=>3}}}]
-      expect(arr.last).to eq ["7557789946794681026", {"bundle"=>"com.apple.Safari", "name"=>nil, "start"=>"2014-09-15 15:00:00 +0200", "duration"=>{"seconds"=>6, "time"=>{"hours"=>0, "minutes"=>0, "seconds"=>6}}}]
+      expect(arr.first).to include "1226267152535471391"
+      expect(arr.last).to include "7557789946794681026"
     end
   end
 
@@ -345,8 +345,8 @@ describe TokiCLI::TokiAPI do
       expect(resp['meta']['request']['args']).to eq ["2014-09-13"]
       expect(resp['data'].size).to eq 17
       arr = resp['data'].to_a
-      expect(arr.first).to eq ["6362298701774470696", {"bundle"=>"com.apple.Safari", "name"=>nil, "start"=>"2014-09-13 10:15:00 +0200", "duration"=>{"seconds"=>54, "time"=>{"hours"=>0, "minutes"=>0, "seconds"=>54}}}]
-      expect(arr.last).to eq ["2496889557830869773", {"bundle"=>"com.apple.finder", "name"=>nil, "start"=>"2014-09-13 19:00:00 +0200", "duration"=>{"seconds"=>297, "time"=>{"hours"=>0, "minutes"=>4, "seconds"=>57}}}]
+      expect(arr.first).to include "6362298701774470696"
+      expect(arr.last).to include "2496889557830869773"
     end
   end
 
