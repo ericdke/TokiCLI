@@ -3,7 +3,7 @@ module TokiCLI
   class FileOps
 
     require 'fileutils'
-    require 'CFPropertyList'
+    require 'cfpropertylist'
     require 'yaml'
 
     attr_accessor :home_path, :toki_path, :db_path, :db_file, :bundles_file, :bundles, :config_file, :config_path, :config, :data_path, :files_path, :user_file, :log_path
