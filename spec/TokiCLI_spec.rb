@@ -265,7 +265,7 @@ describe TokiCLI::TokiAPI do
       expect(resp['meta']['code']).to eq 200
       expect(resp['meta']['request']['command']).to eq 'bundle_log'
       expect(resp['data'].size).to eq 1397
-      expect(resp['data']['6853206097451538432'].to_a).to eq [["bundle", "com.apple.finder"], ["name", nil], ["start", "2014-04-12 15:15:00 +0200"], ["duration", {"seconds"=>10, "time"=>{"hours"=>0, "minutes"=>0, "seconds"=>10}}]]
+      expect(resp['data']['6853206097451538432'].to_a).to eq [["bundle", "com.apple.finder"], ["name", nil], ["start", "2014-04-12 13:15:00 +0000"], ["duration", {"seconds"=>10, "time"=>{"hours"=>0, "minutes"=>0, "seconds"=>10}}]]
       expect(resp['data']['8223841650221385607'].to_a).to eq [["bundle", "com.apple.finder"], ["name", nil], ["start", "2014-09-15 10:45:00 +0200"], ["duration", {"seconds"=>70, "time"=>{"hours"=>0, "minutes"=>1, "seconds"=>10}}]]
     end
   end
