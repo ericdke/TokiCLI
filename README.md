@@ -101,6 +101,12 @@ Complete log for an app on a specific day
 
 `toki app airmail --day 2014-04-19`
 
+#### App range
+
+Complete log for an app between two specific days
+
+`toki app airmail --range 2014-04-19 2014-05-12`
+
 
 ### Bundle
 
@@ -114,6 +120,7 @@ This should always return only one app log.
 `toki bundle it.bloop.airmail --before 2014-04-19`
 `toki bundle it.bloop.airmail --since 2014-04-19`
 `toki bundle it.bloop.airmail --day 2014-04-19`
+`toki bundle it.bloop.airmail --range 2014-04-19 2014-05-12`
 
 ### Activity
 
@@ -188,7 +195,7 @@ TokiCLI should be able to download this data and *rebuild the Toki database* if 
 
 `toki serve`  
 
-You can see a list of requests on the index page: *http://localhost:4567*.
+Returns a JSON response for each request.
 
 Examples of API calls with curl:
 
@@ -199,9 +206,11 @@ curl http://localhost:4567/api/apps/range/2014-05-27/2014-05-30
 curl http://localhost:4567/api/logs/app/safari/
 curl http://localhost:4567/api/logs/app/safari/since/2014-05-27
 curl http://localhost:4567/api/logs/bundle/com.apple.Safari/before/2014-05-27
+curl http://localhost:4567/api/user
+curl http://localhost:4567/api/bundles
 ```  
 
-*Web: remove the "/api" part of the URL to access rendered views of the responses.*
+Find the list of all endpoints with `curl http://localhost:4567/api`.
 
 ## Library  
 
@@ -214,6 +223,8 @@ You can also use the TokiCLI API in another app:
 Create a basic TokiCLI API instance:
 
 `toki = TokiCLI::TokiAPI.new("#{~/Library/path/to/tokiapp/db}")`
+
+*That's the format used by the test suite.*
 
 ### With apps names
 
@@ -244,9 +255,3 @@ It's a time tracker for your apps that sits in the menu bar.
 **Tracking is the job of Toki.app by @keita.**
 
 TokiCLI interacts only with the Toki.app database or the App.net backup channel.
-
-## Thanks
-
-Keita was super nice and said "Awesome!" instead of just "Yes" or "GTFO" when I asked him if I could use the 'Toki' name for this companion Gem.
-
-Many thanks and congrats to Keita! :)

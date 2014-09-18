@@ -199,7 +199,7 @@ class TokiServer < Sinatra::Application
         'message' => 'Welcome to the Toki API server.'
       },
       'data' => {
-        'routes' => %w{/api/apps/total /api/apps/top/[number] api/apps/day/(iso8601_date) /api/apps/range/(iso8601_date)/(iso8601_date) /api/apps/since/(iso8601_date) /api/apps/before/(iso8601_date) /api/activity /api/activity/day/(iso8601_date) /api/activity/since/(iso8601_date) /api/logs/bundle/(bundle_id)/total /api/logs/bundle/(bundle_id)/day/(iso8601_date) /api/logs/bundle/(bundle_id)/since/(iso8601_date) /api/logs/bundle/(bundle_id)/before/(iso8601_date) /api/logs/bundle/(bundle_id)/range/(iso8601_date)/(iso8601_date) /api/logs/app/(app_name)/total /api/logs/app/(app_name)/day/(iso8601_date) /api/logs/app/(app_name)/since/(iso8601_date) /api/user /api/bundles}
+        'routes' => %w{/api/apps/total /api/apps/top/[number] api/apps/day/(iso8601_date) /api/apps/range/(iso8601_date)/(iso8601_date) /api/apps/since/(iso8601_date) /api/apps/before/(iso8601_date) /api/activity /api/activity/day/(iso8601_date) /api/activity/since/(iso8601_date) /api/logs/bundle/(bundle_id)/total /api/logs/bundle/(bundle_id)/day/(iso8601_date) /api/logs/bundle/(bundle_id)/since/(iso8601_date) /api/logs/bundle/(bundle_id)/before/(iso8601_date) /api/logs/bundle/(bundle_id)/range/(iso8601_date)/(iso8601_date) /api/logs/app/(app_name)/total /api/logs/app/(app_name)/day/(iso8601_date) /api/logs/app/(app_name)/since/(iso8601_date) /api/logs/app/(app_name)/before/(iso8601_date) /api/logs/app/(app_name)/range/(iso8601_date)/(iso8601_date) /api/user /api/bundles}
       }
     }.to_json
   end
@@ -319,6 +319,20 @@ class TokiServer < Sinatra::Application
     content_type :json
     candidates = getters.bundles_from_name(app)
     candidates.map {|bundle| toki.bundle_log_since(bundle, day)}
+  end
+
+  get '/api/logs/app/:app/before/?:day?' do
+    app, day = params[:app], params[:day]
+    content_type :json
+    candidates = getters.bundles_from_name(app)
+    candidates.map {|bundle| toki.bundle_log_before(bundle, day)}
+  end
+
+  get '/api/logs/app/:app/range/?:day1/?:day2?' do
+    app, day1, day2 = params[:app], params[:day1], params[:day2]
+    content_type :json
+    candidates = getters.bundles_from_name(app)
+    candidates.map {|bundle| toki.bundle_log_range(bundle, day1, day2)}
   end
 
   get '/api/user/?' do
