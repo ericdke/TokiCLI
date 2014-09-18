@@ -1,3 +1,5 @@
+[![Gem Version](https://badge.fury.io/rb/TokiCLI.svg)](http://badge.fury.io/rb/TokiCLI)
+
 [![Build Status](https://travis-ci.org/ericdke/TokiCLI.svg?branch=master)](https://github.com/ericdke/TokiCLI)
 
 
