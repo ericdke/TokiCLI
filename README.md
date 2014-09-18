@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/ericdke/TokiCLI.svg?branch=master)](https://github.com/ericdke/TokiCLI)
+
+
 # TokiCLI
 
 Toki.app command-line client and API server. 
