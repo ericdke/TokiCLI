@@ -1,6 +1,12 @@
 require 'spec_helper'
 
 describe TokiCLI do
+
+  before do
+    TokiCLI::FileOps.any_instance.stub(:db_file).and_return('spec/mock/mock.sqlite3')
+    TokiCLI::FileOps.any_instance.stub(:bundles).and_return(nil)
+  end
+
   describe "#version" do
     it 'has a version number' do
       expect(TokiCLI::VERSION).not_to be nil
@@ -14,6 +20,100 @@ describe TokiCLI do
       expect(printed).to include 'github'
     end
   end
+
+  describe "#total" do
+    it "shows the total for all apps" do
+      printed = capture_stdout do
+        TokiCLI::App.start(['total'])
+      end
+      expect(printed).to include *%w{com.apple.ReportPanic com.apple.SystemProfiler com.apple.systemuiserver com.apple.InstallAssistant.OSX10Seed1 com.apple.frameworks.diskimages.diuiagent com.apple.WebKit.WebContent com.apple.coreservices.uiagent com.apple.PhotoBooth com.apple.TextEdit com.apple.ProblemReporter com.apple.FontBook com.apple.DigitalColorMeter com.apple.KeyboardSetupAssistant com.apple.ScriptEditor2 com.apple.installer com.apple.DiskUtility com.apple.ActivityMonitor com.apple.iCal com.apple.iphonesimulator com.apple.NetAuthAgent com.apple.AddressBook com.apple.Console com.apple.mail com.apple.Notes com.apple.ScreenSaver.Engine com.apple.Automator com.apple.AirPlayUIAgent com.apple.FaceTime com.apple.iPhoto com.apple.dt.Xcode com.apple.QuickTimePlayerX com.apple.iChat com.apple.systempreferences com.apple.Preview com.apple.WebKit.PluginProcess com.apple.ScreenSharing com.apple.appstore com.apple.ASApplication com.apple.Terminal com.apple.iBooksX com.apple.iTunes com.apple.finder com.apple.Safari}
+    end
+  end
+
+  describe "#top" do
+    it "shows the top 10 apps" do
+      printed = capture_stdout do
+        TokiCLI::App.start(['top', '-n10'])
+      end
+      expect(printed).to include *%w{com.apple.Preview com.apple.WebKit.PluginProcess com.apple.ScreenSharing com.apple.appstore com.apple.ASApplication com.apple.Terminal com.apple.iBooksX com.apple.iTunes com.apple.finder com.apple.Safari}
+      expect(printed).to_not include 'com.apple.systempreferences'
+    end
+
+    it "shows the top apps" do
+      printed = capture_stdout do
+        TokiCLI::App.start(['top'])
+      end
+      expect(printed).to include *%w{com.apple.Terminal com.apple.iBooksX com.apple.iTunes com.apple.finder com.apple.Safari}
+      expect(printed).to_not include 'com.apple.ASApplication'
+    end
+  end
+
+  describe "day" do
+    it "shows apps for day 2014-09-15" do
+      printed = capture_stdout do
+        TokiCLI::App.start(['day', '2014-09-15'])
+      end
+      expect(printed).to include *%w{com.apple.finder com.apple.Safari}
+      expect(printed).to_not include 'com.apple.iTunes'
+    end
+  end
+
+  describe "range" do
+    it "shows apps between 2014-09-12 and 2014-09-15" do
+      printed = capture_stdout do
+        TokiCLI::App.start(['range', '2014-09-12', '2014-09-15'])
+      end
+      expect(printed).to include *%w{com.apple.NetAuthAgent com.apple.ActivityMonitor com.apple.installer com.apple.appstore com.apple.iTunes com.apple.Terminal com.apple.ScreenSaver.Engine com.apple.ScreenSharing com.apple.WebKit.PluginProcess com.apple.finder com.apple.Safari}
+      expect(printed).to_not include 'com.apple.TextEdit'
+    end
+  end
+
+  describe "before" do
+    it "shows apps before 2014-05-15" do
+      printed = capture_stdout do
+        TokiCLI::App.start(['before', '2014-05-15'])
+      end
+      expect(printed).to include *%w{com.apple.coreservices.uiagent com.apple.ReportPanic com.apple.frameworks.diskimages.diuiagent com.apple.installer com.apple.ProblemReporter com.apple.WebKit.WebContent com.apple.dt.Xcode com.apple.TextEdit com.apple.NetAuthAgent com.apple.DigitalColorMeter com.apple.KeyboardSetupAssistant com.apple.ActivityMonitor com.apple.Automator com.apple.mail com.apple.iphonesimulator com.apple.Terminal com.apple.Console com.apple.Notes com.apple.iChat com.apple.WebKit.PluginProcess com.apple.Preview com.apple.iPhoto com.apple.ASApplication com.apple.systempreferences com.apple.ScreenSharing com.apple.appstore com.apple.QuickTimePlayerX com.apple.iTunes com.apple.finder com.apple.Safari}
+    end
+  end
+
+  describe "since" do
+    it "shows apps since 2014-09-12" do
+      printed = capture_stdout do
+        TokiCLI::App.start(['since', '2014-09-12'])
+      end
+      expect(printed).to include *%w{com.apple.NetAuthAgent com.apple.ActivityMonitor com.apple.installer com.apple.appstore com.apple.iTunes com.apple.Terminal com.apple.ScreenSaver.Engine com.apple.ScreenSharing com.apple.WebKit.PluginProcess com.apple.finder com.apple.Safari}
+      expect(printed).to_not include 'com.apple.TextEdit'
+    end
+  end
+
+  describe "activity" do
+    it "shows activity for 2014-09-14" do
+      printed = capture_stdout do
+        TokiCLI::App.start(['activity', '--day', '2014-09-14'])
+      end
+      expect(printed).to include *['com.apple.finder              |  02:00:00     | 00m 04s      | 3009986780794979448', 'com.apple.Safari              |  17:00:00     | 02m 02s      | 279578532860092796', 'com.apple.finder              |  23:30:00     | 01m 37s      | 5321635596015812810']
+    end
+  end
+
+  describe "activity" do
+    it "shows activity since 2014-09-14" do
+      printed = capture_stdout do
+        TokiCLI::App.start(['activity', '--since', '2014-09-14'])
+      end
+      expect(printed).to include *['com.apple.finder              |  02:00:00     | 00m 04s      | 3009986780794979448', 'com.apple.Safari              |  17:00:00     | 02m 02s      | 279578532860092796', 'com.apple.finder              |  23:30:00     | 01m 37s      | 5321635596015812810', 'com.apple.finder              |  08:15:00     | 00m 29s      | 2450616761580369798', 'com.apple.Safari              |  15:00:00     | 00m 06s      | 7557789946794681026']
+    end
+  end
+
+  describe "bundle" do
+    it "shows log for an app" do
+      printed = capture_stdout do
+        TokiCLI::App.start(['bundle', 'com.apple.iTunes'])
+      end
+      expect(printed).to include *['2014-04-13', '16:45:00               | 01m 02s                | 93837223385103975', '2014-04-14', '09:15:00               | 00m 18s                | 9048025340952260608', '12:30:00               | 00m 27s                | 8045504996000693405', 'Total: 3h 52m 32s']
+    end
+  end
+
 end
 
 describe TokiCLI::TokiAPI do
