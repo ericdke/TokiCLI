@@ -222,11 +222,9 @@ You can also use the TokiCLI API in another app:
 
 ### Basic
 
-Create a basic TokiCLI API instance:
+Create a basic TokiCLI API instance without referencing bundles:
 
-`toki = TokiCLI::TokiAPI.new("#{~/Library/path/to/tokiapp/db}")`
-
-*That's the format used by the test suite.*
+`toki = TokiCLI::TokiAPI.new("#{~/Library/path/to/tokiapp/db}", {})`  
 
 ### With apps names
 
