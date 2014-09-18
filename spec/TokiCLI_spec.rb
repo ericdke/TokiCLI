@@ -350,5 +350,78 @@ describe TokiCLI::TokiAPI do
     end
   end
 
+end
+
+describe TokiCLI::Helpers do
+
+  let(:helpers) { TokiCLI::Helpers.new }
+
+  describe "#sec_to_time" do
+    it "converts unix time in a hash of hours/minutes/seconds" do
+      result = helpers.sec_to_time(12345)
+      expect(result['hours']).to eq 3
+      expect(result['minutes']).to eq 25
+      expect(result['seconds']).to eq 45
+    end
+  end
+
+  describe "#epoch_to_date" do
+    it "converts unix date to iso time" do
+      result = helpers.epoch_to_date(1411075048)
+      expect(result.to_s).to include '2014-09-18'
+    end
+  end
+
+  describe "#check_date_validity" do
+    it "converts a string to a date object" do
+      result = helpers.check_date_validity('2014-09-18')
+      expect(result.iso8601[0..9]).to eq '2014-09-18'
+    end
+    it "returns false if string is incorrect" do
+      result = helpers.check_date_validity('yolo')
+      expect(result).to be false
+    end
+  end
+
+  describe "#readable_time" do
+    it "converts a hash of hours/minutes/seconds to a string" do
+      result = helpers.readable_time({'hours' => 12, 'minutes' => 33, 'seconds' => 7})
+      expect(result).to eq '12h 33m 07s'
+    end
+  end
+
+  describe "#readable_time_log" do
+    it "converts a hash of hours/minutes/seconds to a string" do
+      result = helpers.readable_time_log({'hours' => 12, 'minutes' => 33, 'seconds' => 7})
+      expect(result).to eq '33m 07s'
+    end
+  end
+
+  describe "#calc_apps_total" do
+    it "sums the number of seconds in each object" do
+      result = helpers.calc_apps_total([{'total' => {'seconds' => 7}}, {'total' => {'seconds' => 10}}])
+      expect(result).to eq 17
+    end
+  end
+
+  describe "#calc_logs_total" do
+    it "sums the number of seconds in each object" do
+      result = helpers.calc_logs_total(
+        {
+          1 => {
+            'duration' => {
+              'seconds' => 7
+            }
+          },
+          2 => {
+            'duration' => {
+              'seconds' => 10
+            }
+          }
+        }
+      )
+      expect(result).to eq 17
+    end
+  end
 
 end
