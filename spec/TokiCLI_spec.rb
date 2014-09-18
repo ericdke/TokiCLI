@@ -2,9 +2,18 @@ require 'spec_helper'
 
 describe TokiCLI do
 
+  class Fake
+    attr_accessor :home_path, :toki_path, :db_path, :db_file, :bundles_file, :bundles, :config_file, :config_path, :config, :data_path, :files_path, :user_file, :log_path
+    def db_file
+      'spec/mock/mock.sqlite3'
+    end
+    def config
+      {}
+    end
+  end
+
   before do
-    TokiCLI::FileOps.any_instance.stub(:db_file).and_return('spec/mock/mock.sqlite3')
-    TokiCLI::FileOps.any_instance.stub(:bundles).and_return(nil)
+    TokiCLI::FileOps.stub(:new).and_return(Fake.new)
   end
 
   describe "#version" do
