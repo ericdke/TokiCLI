@@ -146,7 +146,7 @@ module TokiCLI
 
     def app_row_with_name(obj)
       max = @settings['table']['width'] / 3
-      [width(max + 5, obj['bundle']), width(max - 5, obj['name']), readable_time(obj['total']['time'])]
+      [width(max + 5, obj['bundle']), width(max - 10, obj['name']), readable_time(obj['total']['time'])]
     end
 
     def app_row(obj)
