@@ -11,6 +11,17 @@ Access your Toki data from the local database or from the App.net backup channel
 
 ![TokiServer example](https://www.evernote.com/shard/s89/sh/dd392b00-82b6-4f13-b573-c925a99ae5a0/02aa5ea4266e8bc7e28d7c91ba8b922c/deep/0/toki-server.png)  
 
+---
+
+**UPDATE**
+
+Toki.app will cease to function when App.net will shut down their servers on 2017/03/14.
+
+TokiCLI will continue to function but will then be irrelevant as there will not be anything to track anymore via Toki.app (and TokiCLI's App.net-related will also cease to function, of course).
+
+You will still be able to read and analyse your existing data with TokiCLI.
+
+---
 
 ## Installation
 

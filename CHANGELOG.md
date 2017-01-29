@@ -1,3 +1,7 @@
+# 0.3.1
+
+- Column width
+
 # 0.3.0
 
 - Complete refactoring

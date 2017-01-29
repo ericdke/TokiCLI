@@ -8,7 +8,7 @@ module TokiCLI
 
     def initialize settings = {}
       @settings = if settings.empty?
-        {"table"=>{"width"=>90}} # force default if no initialization
+        {"table"=>{"width"=>120}} # force default if no initialization
       else
         settings
       end
